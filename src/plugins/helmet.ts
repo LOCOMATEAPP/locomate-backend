@@ -1,0 +1,8 @@
+import { FastifyInstance } from 'fastify';
+import helmet from '@fastify/helmet';
+
+export const registerHelmet = async (app: FastifyInstance): Promise<void> => {
+  await app.register(helmet, {
+    contentSecurityPolicy: process.env.NODE_ENV === 'production' ? undefined : false,
+  });
+};

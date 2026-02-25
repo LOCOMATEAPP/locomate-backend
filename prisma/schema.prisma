@@ -1,0 +1,365 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(uuid())
+  phone       String   @unique
+  name        String?
+  email       String?
+  avatar      String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  refreshTokens  RefreshToken[]
+  savedItems     SavedItem[]
+  routeHistory   RouteHistory[]
+  rewardClaims   RewardClaim[]
+  parkingSessions ParkingSession[]
+  messageReads   MessageRead[]
+
+  @@index([phone])
+  @@index([isActive])
+  @@map("users")
+}
+
+model Admin {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  password    String
+  name        String
+  roleId      String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  role          Role             @relation(fields: [roleId], references: [id])
+  refreshTokens AdminRefreshToken[]
+  logs          AdminLog[]
+
+  @@index([email])
+  @@index([roleId])
+  @@index([isActive])
+  @@map("admins")
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  admins      Admin[]
+  permissions RolePermission[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  resource    String
+  action      String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  roles       RolePermission[]
+
+  @@index([resource, action])
+  @@map("permissions")
+}
+
+model RolePermission {
+  id           String @id @default(uuid())
+  roleId       String
+  permissionId String
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+  @@index([roleId])
+  @@index([permissionId])
+  @@map("role_permissions")
+}
+
+model Mall {
+  id          String   @id @default(uuid())
+  name        String
+  address     String
+  city        String
+  state       String
+  zipCode     String
+  latitude    Float
+  longitude   Float
+  description String?  @db.Text
+  image       String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+
+  floors      Floor[]
+  stores      Store[]
+  offers      Offer[]
+  messages    Message[]
+
+  @@index([city])
+  @@index([isActive])
+  @@index([deletedAt])
+  @@map("malls")
+}
+
+model Floor {
+  id          String   @id @default(uuid())
+  mallId      String
+  name        String
+  floorNumber Int
+  mapImage    String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+
+  mall        Mall     @relation(fields: [mallId], references: [id], onDelete: Cascade)
+  stores      Store[]
+
+  @@unique([mallId, floorNumber])
+  @@index([mallId])
+  @@index([isActive])
+  @@index([deletedAt])
+  @@map("floors")
+}
+
+model Store {
+  id          String   @id @default(uuid())
+  mallId      String
+  floorId     String
+  name        String
+  category    String
+  description String?  @db.Text
+  logo        String?
+  images      Json?
+  phone       String?
+  email       String?
+  website     String?
+  coordinateX Float
+  coordinateY Float
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+
+  mall         Mall          @relation(fields: [mallId], references: [id], onDelete: Cascade)
+  floor        Floor         @relation(fields: [floorId], references: [id], onDelete: Cascade)
+  offers       Offer[]
+  savedItems   SavedItem[]
+  routeHistory RouteHistory[]
+  messages     Message[]
+
+  @@index([mallId])
+  @@index([floorId])
+  @@index([category])
+  @@index([isActive])
+  @@index([deletedAt])
+  @@map("stores")
+}
+
+model Offer {
+  id          String   @id @default(uuid())
+  mallId      String
+  storeId     String
+  title       String
+  description String   @db.Text
+  image       String?
+  discount    String
+  terms       String?  @db.Text
+  startDate   DateTime
+  endDate     DateTime
+  isActive    Boolean  @default(true)
+  maxClaims   Int?
+  claimCount  Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+
+  mall         Mall          @relation(fields: [mallId], references: [id], onDelete: Cascade)
+  store        Store         @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  savedItems   SavedItem[]
+  rewardClaims RewardClaim[]
+
+  @@index([mallId])
+  @@index([storeId])
+  @@index([isActive])
+  @@index([startDate, endDate])
+  @@index([deletedAt])
+  @@map("offers")
+}
+
+model RewardClaim {
+  id          String   @id @default(uuid())
+  userId      String
+  offerId     String
+  rewardCode  String   @unique
+  isRedeemed  Boolean  @default(false)
+  redeemedAt  DateTime?
+  claimedAt   DateTime @default(now())
+  expiresAt   DateTime
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  offer       Offer    @relation(fields: [offerId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, offerId])
+  @@index([userId])
+  @@index([offerId])
+  @@index([rewardCode])
+  @@index([isRedeemed])
+  @@map("reward_claims")
+}
+
+model SavedItem {
+  id          String   @id @default(uuid())
+  userId      String
+  itemType    String
+  storeId     String?
+  offerId     String?
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  store       Store?   @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  offer       Offer?   @relation(fields: [offerId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, itemType, storeId, offerId])
+  @@index([userId])
+  @@index([storeId])
+  @@index([offerId])
+  @@map("saved_items")
+}
+
+model RouteHistory {
+  id          String   @id @default(uuid())
+  userId      String
+  storeId     String
+  distance    Float
+  duration    Int
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([storeId])
+  @@map("route_history")
+}
+
+model Message {
+  id          String   @id @default(uuid())
+  mallId      String?
+  storeId     String?
+  title       String
+  body        String   @db.Text
+  image       String?
+  targetType  String
+  scheduledAt DateTime?
+  sentAt      DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  mall        Mall?    @relation(fields: [mallId], references: [id], onDelete: Cascade)
+  store       Store?   @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  reads       MessageRead[]
+
+  @@index([mallId])
+  @@index([storeId])
+  @@index([scheduledAt])
+  @@map("messages")
+}
+
+model MessageRead {
+  id          String   @id @default(uuid())
+  userId      String
+  messageId   String
+  readAt      DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  message     Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, messageId])
+  @@index([userId])
+  @@index([messageId])
+  @@map("message_reads")
+}
+
+model ParkingSession {
+  id          String    @id @default(uuid())
+  userId      String
+  location    String
+  startTime   DateTime  @default(now())
+  endTime     DateTime?
+  duration    Int?
+  charges     Float?
+  isPaid      Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isPaid])
+  @@map("parking_sessions")
+}
+
+model RefreshToken {
+  id          String   @id @default(uuid())
+  userId      String
+  token       String   @unique @db.VarChar(500)
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("refresh_tokens")
+}
+
+model AdminRefreshToken {
+  id          String   @id @default(uuid())
+  adminId     String
+  token       String   @unique @db.VarChar(500)
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+
+  admin       Admin    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@index([adminId])
+  @@index([expiresAt])
+  @@map("admin_refresh_tokens")
+}
+
+model AdminLog {
+  id          String   @id @default(uuid())
+  adminId     String
+  action      String
+  resource    String
+  resourceId  String?
+  details     Json?
+  ipAddress   String?
+  createdAt   DateTime @default(now())
+
+  admin       Admin    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@index([adminId])
+  @@index([action])
+  @@index([resource])
+  @@index([createdAt])
+  @@map("admin_logs")
+}

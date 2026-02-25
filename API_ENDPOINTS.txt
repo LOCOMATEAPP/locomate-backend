@@ -1,0 +1,429 @@
+================================================================================
+                    LOCOMATE BACKEND - API ENDPOINTS
+================================================================================
+
+BASE URL: http://localhost:3000
+
+================================================================================
+                          HEALTH CHECK
+================================================================================
+
+# Health Check
+curl http://localhost:3000/health
+
+
+================================================================================
+                      MOBILE APP APIs - AUTHENTICATION
+================================================================================
+
+# 1. Send OTP
+curl -X POST http://localhost:3000/api/mobile/auth/send-otp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "phone": "+1234567890"
+  }'
+
+# Response: { "success": true, "data": { "otp": "123456" } }
+
+
+# 2. Verify OTP & Login
+curl -X POST http://localhost:3000/api/mobile/auth/verify-otp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "phone": "+1234567890",
+    "otp": "123456"
+  }'
+
+# Response: { "success": true, "data": { "accessToken": "...", "refreshToken": "...", "user": {...} } }
+
+
+# 3. Refresh Access Token
+curl -X POST http://localhost:3000/api/mobile/auth/refresh-token \
+  -H "Content-Type: application/json" \
+  -d '{
+    "refreshToken": "YOUR_REFRESH_TOKEN"
+  }'
+
+
+# 4. Logout
+curl -X POST http://localhost:3000/api/mobile/auth/logout \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "refreshToken": "YOUR_REFRESH_TOKEN"
+  }'
+
+
+================================================================================
+                      MOBILE APP APIs - USER PROFILE
+================================================================================
+
+# 1. Get User Profile
+curl -X GET http://localhost:3000/api/mobile/users/profile \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+
+# 2. Update User Profile
+curl -X PUT http://localhost:3000/api/mobile/users/profile \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "John Doe",
+    "email": "john@example.com",
+    "avatar": "https://example.com/avatar.jpg"
+  }'
+
+
+================================================================================
+                      MOBILE APP APIs - MALLS & STORES
+================================================================================
+
+# 1. Get All Malls
+curl -X GET "http://localhost:3000/api/mobile/malls?page=1&limit=20" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+
+# 2. Get Malls by City
+curl -X GET "http://localhost:3000/api/mobile/malls?city=New%20York&page=1&limit=20" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+
+# 3. Get Mall by ID
+curl -X GET http://localhost:3000/api/mobile/malls/MALL_ID \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+
+# 4. Get Floors by Mall ID
+curl -X GET http://localhost:3000/api/mobile/malls/MALL_ID/floors \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+
+# 5. Get Stores by Mall ID
+curl -X GET http://localhost:3000/api/mobile/malls/MALL_ID/stores \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+
+# 6. Get Stores by Mall ID and Floor ID
+curl -X GET "http://localhost:3000/api/mobile/malls/MALL_ID/stores?floorId=FLOOR_ID" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+
+# 7. Search Stores in Mall
+curl -X GET "http://localhost:3000/api/mobile/malls/MALL_ID/stores/search?q=fashion" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+
+# 8. Get Store by ID
+curl -X GET http://localhost:3000/api/mobile/malls/stores/STORE_ID \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+
+================================================================================
+                      MOBILE APP APIs - NAVIGATION
+================================================================================
+
+# 1. Calculate Route to Store
+curl -X POST http://localhost:3000/api/mobile/navigation/route \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "startX": 10.5,
+    "startY": 20.3,
+    "targetStoreId": "STORE_ID",
+    "mallId": "MALL_ID"
+  }'
+
+# Response: { "distance": 25.5, "duration": 18, "steps": [...] }
+
+
+# 2. Get Navigation History
+curl -X GET "http://localhost:3000/api/mobile/navigation/history?page=1&limit=20" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+
+================================================================================
+                      MOBILE APP APIs - OFFERS
+================================================================================
+
+# 1. Get All Active Offers
+curl -X GET "http://localhost:3000/api/mobile/offers?page=1&limit=20" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+
+# 2. Get Offers by Mall
+curl -X GET "http://localhost:3000/api/mobile/offers?mallId=MALL_ID&page=1&limit=20" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+
+# 3. Get Offer by ID
+curl -X GET http://localhost:3000/api/mobile/offers/OFFER_ID \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+
+================================================================================
+                      MOBILE APP APIs - REWARDS
+================================================================================
+
+# 1. Claim Offer (Get Reward)
+curl -X POST http://localhost:3000/api/mobile/rewards/claim \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "offerId": "OFFER_ID"
+  }'
+
+# Response: { "rewardCode": "RWD-ABC123", "expiresAt": "..." }
+
+
+# 2. Get My Claimed Rewards
+curl -X GET "http://localhost:3000/api/mobile/rewards/my-claims?page=1&limit=20" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+
+# 3. Redeem Reward (Store validates this)
+curl -X POST http://localhost:3000/api/mobile/rewards/redeem \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "rewardCode": "RWD-ABC123"
+  }'
+
+
+================================================================================
+                      MOBILE APP APIs - SAVED ITEMS
+================================================================================
+
+# 1. Save Store
+curl -X POST http://localhost:3000/api/mobile/saved/store \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "storeId": "STORE_ID"
+  }'
+
+
+# 2. Save Offer
+curl -X POST http://localhost:3000/api/mobile/saved/offer \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "offerId": "OFFER_ID"
+  }'
+
+
+# 3. Get All Saved Items
+curl -X GET http://localhost:3000/api/mobile/saved \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+
+# 4. Get Saved Items by Type
+curl -X GET "http://localhost:3000/api/mobile/saved?type=store" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+curl -X GET "http://localhost:3000/api/mobile/saved?type=offer" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+
+# 5. Remove Saved Item
+curl -X DELETE http://localhost:3000/api/mobile/saved/SAVED_ITEM_ID \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+
+================================================================================
+                      MOBILE APP APIs - MESSAGING
+================================================================================
+
+# 1. Get All Messages
+curl -X GET "http://localhost:3000/api/mobile/messages?page=1&limit=20" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+
+# 2. Mark Message as Read
+curl -X POST http://localhost:3000/api/mobile/messages/MESSAGE_ID/read \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+
+================================================================================
+                      MOBILE APP APIs - PARKING
+================================================================================
+
+# 1. Start Parking Session
+curl -X POST http://localhost:3000/api/mobile/parking/start \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "location": "Level 2, Zone A, Spot 45"
+  }'
+
+
+# 2. Get Active Parking Session
+curl -X GET http://localhost:3000/api/mobile/parking/active \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+# Response: { "currentDuration": 45, "currentCharges": 50, ... }
+
+
+# 3. End Parking Session
+curl -X POST http://localhost:3000/api/mobile/parking/end \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+# Response: { "duration": 120, "charges": 100, ... }
+
+
+# 4. Get Parking History
+curl -X GET "http://localhost:3000/api/mobile/parking/history?page=1&limit=20" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+
+================================================================================
+                      ADMIN CRM APIs - AUTHENTICATION
+================================================================================
+
+# 1. Admin Login
+curl -X POST http://localhost:3000/api/admin/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "admin@locomate.com",
+    "password": "admin123"
+  }'
+
+# Response: { "accessToken": "...", "refreshToken": "...", "admin": {...} }
+
+
+# 2. Admin Refresh Token
+curl -X POST http://localhost:3000/api/admin/auth/refresh-token \
+  -H "Content-Type: application/json" \
+  -d '{
+    "refreshToken": "YOUR_ADMIN_REFRESH_TOKEN"
+  }'
+
+
+# 3. Admin Logout
+curl -X POST http://localhost:3000/api/admin/auth/logout \
+  -H "Authorization: Bearer YOUR_ADMIN_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "refreshToken": "YOUR_ADMIN_REFRESH_TOKEN"
+  }'
+
+
+================================================================================
+                      SAMPLE WORKFLOW - MOBILE USER
+================================================================================
+
+# Step 1: Send OTP
+curl -X POST http://localhost:3000/api/mobile/auth/send-otp \
+  -H "Content-Type: application/json" \
+  -d '{"phone": "+1234567890"}'
+
+# Step 2: Verify OTP (use OTP from response in dev mode)
+curl -X POST http://localhost:3000/api/mobile/auth/verify-otp \
+  -H "Content-Type: application/json" \
+  -d '{"phone": "+1234567890", "otp": "123456"}'
+
+# Save the accessToken from response
+
+# Step 3: Get Malls
+curl -X GET http://localhost:3000/api/mobile/malls \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+# Step 4: Get Stores in Mall
+curl -X GET http://localhost:3000/api/mobile/malls/MALL_ID/stores \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+# Step 5: Calculate Route to Store
+curl -X POST http://localhost:3000/api/mobile/navigation/route \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "startX": 0,
+    "startY": 0,
+    "targetStoreId": "STORE_ID",
+    "mallId": "MALL_ID"
+  }'
+
+# Step 6: Get Active Offers
+curl -X GET http://localhost:3000/api/mobile/offers \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+# Step 7: Claim an Offer
+curl -X POST http://localhost:3000/api/mobile/rewards/claim \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"offerId": "OFFER_ID"}'
+
+# Step 8: View My Rewards
+curl -X GET http://localhost:3000/api/mobile/rewards/my-claims \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+
+================================================================================
+                      SAMPLE WORKFLOW - ADMIN
+================================================================================
+
+# Step 1: Admin Login
+curl -X POST http://localhost:3000/api/admin/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "admin@locomate.com",
+    "password": "admin123"
+  }'
+
+# Save the accessToken from response
+
+# Step 2: Use admin token for admin operations
+# (Admin management endpoints to be implemented as needed)
+
+
+================================================================================
+                      DEFAULT CREDENTIALS
+================================================================================
+
+Admin Account:
+  Email: admin@locomate.com
+  Password: admin123
+  Role: SuperAdmin
+
+Sample Mall:
+  Name: Central Plaza
+  City: New York
+  Stores: Fashion Hub, Tech Store, Food Court
+
+
+================================================================================
+                      NOTES
+================================================================================
+
+1. Replace YOUR_ACCESS_TOKEN with actual token from login response
+2. Replace MALL_ID, STORE_ID, OFFER_ID with actual IDs from API responses
+3. In development mode, OTP is returned in the response for testing
+4. All timestamps are in ISO 8601 format
+5. Pagination: Default page=1, limit=20, max limit=100
+6. JWT Access Token expires in 15 minutes
+7. JWT Refresh Token expires in 7 days
+8. OTP expires in 5 minutes (300 seconds)
+9. Parking rate: $50 per hour (configurable in .env)
+10. Reward codes are unique and expire in 30 days after claiming
+
+================================================================================
+                      ERROR RESPONSES
+================================================================================
+
+All errors follow this format:
+{
+  "success": false,
+  "message": "Error message",
+  "error": "Detailed error description"
+}
+
+Common HTTP Status Codes:
+- 200: Success
+- 201: Created
+- 400: Bad Request (validation error)
+- 401: Unauthorized (invalid/expired token)
+- 403: Forbidden (insufficient permissions)
+- 404: Not Found
+- 429: Too Many Requests (rate limit exceeded)
+- 500: Internal Server Error
+
+================================================================================

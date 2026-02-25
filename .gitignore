@@ -1,12 +1,3 @@
-node_modules
-dist
+node_modules/
 .env
-.env.local
-.env.production
-npm-debug.log
-yarn-error.log
-coverage
 .DS_Store
-*.log
-.vscode
-.idea

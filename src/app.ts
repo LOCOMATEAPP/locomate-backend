@@ -44,19 +44,19 @@ export const buildApp = async (): Promise<FastifyInstance> => {
     };
   });
 
-  // Mobile API routes
-  await app.register(authRoutes, { prefix: '/api/mobile/auth' });
-  await app.register(userRoutes, { prefix: '/api/mobile/users' });
-  await app.register(mallRoutes, { prefix: '/api/mobile/malls' });
-  await app.register(navigationRoutes, { prefix: '/api/mobile/navigation' });
-  await app.register(offerRoutes, { prefix: '/api/mobile/offers' });
-  await app.register(rewardRoutes, { prefix: '/api/mobile/rewards' });
-  await app.register(savedRoutes, { prefix: '/api/mobile/saved' });
-  await app.register(messagingRoutes, { prefix: '/api/mobile/messages' });
-  await app.register(parkingRoutes, { prefix: '/api/mobile/parking' });
+  // Mobile API routes - v1
+  await app.register(authRoutes, { prefix: '/api/v1/mobile/auth' });
+  await app.register(userRoutes, { prefix: '/api/v1/mobile/users' });
+  await app.register(mallRoutes, { prefix: '/api/v1/mobile/malls' });
+  await app.register(navigationRoutes, { prefix: '/api/v1/mobile/navigation' });
+  await app.register(offerRoutes, { prefix: '/api/v1/mobile/offers' });
+  await app.register(rewardRoutes, { prefix: '/api/v1/mobile/rewards' });
+  await app.register(savedRoutes, { prefix: '/api/v1/mobile/saved' });
+  await app.register(messagingRoutes, { prefix: '/api/v1/mobile/messages' });
+  await app.register(parkingRoutes, { prefix: '/api/v1/mobile/parking' });
 
-  // Admin API routes
-  await app.register(adminAuthRoutes, { prefix: '/api/admin/auth' });
+  // Admin API routes - v1
+  await app.register(adminAuthRoutes, { prefix: '/api/v1/admin/auth' });
 
   return app;
 };

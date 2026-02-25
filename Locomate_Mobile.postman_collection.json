@@ -1,0 +1,842 @@
+{
+  "info": {
+    "name": "Locomate - Mobile APIs",
+    "_postman_id": "mobile-collection-v1",
+    "description": "Mobile App APIs for Locomate Mall Navigation",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access_token}}"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "refresh_token",
+      "value": ""
+    },
+    {
+      "key": "phone",
+      "value": "+1234567890"
+    },
+    {
+      "key": "otp",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "1. Send OTP",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const res = pm.response.json();",
+                  "    if (res.data && res.data.otp) {",
+                  "        pm.collectionVariables.set('otp', res.data.otp);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"{{phone}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/auth/send-otp",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "auth",
+                "send-otp"
+              ]
+            },
+            "description": "Send OTP to user's phone number"
+          }
+        },
+        {
+          "name": "2. Verify OTP & Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const res = pm.response.json();",
+                  "    if (res.data) {",
+                  "        pm.collectionVariables.set('access_token', res.data.accessToken);",
+                  "        pm.collectionVariables.set('refresh_token', res.data.refreshToken);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"{{phone}}\",\n  \"otp\": \"{{otp}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/auth/verify-otp",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "auth",
+                "verify-otp"
+              ]
+            }
+          }
+        },
+        {
+          "name": "3. Refresh Token",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refresh_token}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/auth/refresh-token",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "auth",
+                "refresh-token"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4. Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refresh_token}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/auth/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "auth",
+                "logout"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Profile",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/users/profile",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "users",
+                "profile"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"avatar\": \"https://example.com/avatar.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/users/profile",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "users",
+                "profile"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Malls & Stores",
+      "item": [
+        {
+          "name": "Get All Malls",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/malls?page=1&limit=20",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "malls"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "city",
+                  "value": "New York",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Mall by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/malls/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "malls",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Floors by Mall",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/malls/:mallId/floors",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "malls",
+                ":mallId",
+                "floors"
+              ],
+              "variable": [
+                {
+                  "key": "mallId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Stores by Mall",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/malls/:mallId/stores?floorId=",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "malls",
+                ":mallId",
+                "stores"
+              ],
+              "query": [
+                {
+                  "key": "floorId",
+                  "value": "",
+                  "disabled": true
+                }
+              ],
+              "variable": [
+                {
+                  "key": "mallId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search Stores",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/malls/:mallId/stores/search?q=fashion",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "malls",
+                ":mallId",
+                "stores",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "fashion"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "mallId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Store by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/malls/stores/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "malls",
+                "stores",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Navigation",
+      "item": [
+        {
+          "name": "Calculate Route",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startX\": 10.5,\n  \"startY\": 20.3,\n  \"targetStoreId\": \"\",\n  \"mallId\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/navigation/route",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "navigation",
+                "route"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Navigation History",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/navigation/history?page=1&limit=20",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "navigation",
+                "history"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Offers",
+      "item": [
+        {
+          "name": "Get All Offers",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/offers?page=1&limit=20&mallId=",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "offers"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "mallId",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Offer by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/offers/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "offers",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Rewards",
+      "item": [
+        {
+          "name": "Claim Offer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"offerId\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/rewards/claim",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "rewards",
+                "claim"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get My Claims",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/rewards/my-claims?page=1&limit=20",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "rewards",
+                "my-claims"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Redeem Reward",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rewardCode\": \"RWD-ABC123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/rewards/redeem",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "rewards",
+                "redeem"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Saved Items",
+      "item": [
+        {
+          "name": "Save Store",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"storeId\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/saved/store",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "saved",
+                "store"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Save Offer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"offerId\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/saved/offer",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "saved",
+                "offer"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Saved Items",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/saved?type=",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "saved"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "",
+                  "disabled": true,
+                  "description": "store or offer"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Remove Saved Item",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/saved/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "saved",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Messaging",
+      "item": [
+        {
+          "name": "Get Messages",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/messages?page=1&limit=20",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "messages"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Mark Message as Read",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/messages/:id/read",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "messages",
+                ":id",
+                "read"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Parking",
+      "item": [
+        {
+          "name": "Start Parking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"location\": \"Level 2, Zone A, Spot 45\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/parking/start",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "parking",
+                "start"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Active Session",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/parking/active",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "parking",
+                "active"
+              ]
+            }
+          }
+        },
+        {
+          "name": "End Parking",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/parking/end",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "parking",
+                "end"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Parking History",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/parking/history?page=1&limit=20",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "mobile",
+                "parking",
+                "history"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -17,7 +17,7 @@ curl http://localhost:3000/health
 ================================================================================
 
 # 1. Send OTP
-curl -X POST http://localhost:3000/api/mobile/auth/send-otp \
+curl -X POST http://localhost:3000/api/v1/mobile/auth/send-otp \
   -H "Content-Type: application/json" \
   -d '{
     "phone": "+1234567890"
@@ -27,7 +27,7 @@ curl -X POST http://localhost:3000/api/mobile/auth/send-otp \
 
 
 # 2. Verify OTP & Login
-curl -X POST http://localhost:3000/api/mobile/auth/verify-otp \
+curl -X POST http://localhost:3000/api/v1/mobile/auth/verify-otp \
   -H "Content-Type: application/json" \
   -d '{
     "phone": "+1234567890",
@@ -38,7 +38,7 @@ curl -X POST http://localhost:3000/api/mobile/auth/verify-otp \
 
 
 # 3. Refresh Access Token
-curl -X POST http://localhost:3000/api/mobile/auth/refresh-token \
+curl -X POST http://localhost:3000/api/v1/mobile/auth/refresh-token \
   -H "Content-Type: application/json" \
   -d '{
     "refreshToken": "YOUR_REFRESH_TOKEN"
@@ -46,7 +46,7 @@ curl -X POST http://localhost:3000/api/mobile/auth/refresh-token \
 
 
 # 4. Logout
-curl -X POST http://localhost:3000/api/mobile/auth/logout \
+curl -X POST http://localhost:3000/api/v1/mobile/auth/logout \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -59,12 +59,12 @@ curl -X POST http://localhost:3000/api/mobile/auth/logout \
 ================================================================================
 
 # 1. Get User Profile
-curl -X GET http://localhost:3000/api/mobile/users/profile \
+curl -X GET http://localhost:3000/api/v1/mobile/users/profile \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 
 # 2. Update User Profile
-curl -X PUT http://localhost:3000/api/mobile/users/profile \
+curl -X PUT http://localhost:3000/api/v1/mobile/users/profile \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -79,42 +79,42 @@ curl -X PUT http://localhost:3000/api/mobile/users/profile \
 ================================================================================
 
 # 1. Get All Malls
-curl -X GET "http://localhost:3000/api/mobile/malls?page=1&limit=20" \
+curl -X GET "http://localhost:3000/api/v1/mobile/malls?page=1&limit=20" \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 
 # 2. Get Malls by City
-curl -X GET "http://localhost:3000/api/mobile/malls?city=New%20York&page=1&limit=20" \
+curl -X GET "http://localhost:3000/api/v1/mobile/malls?city=New%20York&page=1&limit=20" \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 
 # 3. Get Mall by ID
-curl -X GET http://localhost:3000/api/mobile/malls/MALL_ID \
+curl -X GET http://localhost:3000/api/v1/mobile/malls/MALL_ID \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 
 # 4. Get Floors by Mall ID
-curl -X GET http://localhost:3000/api/mobile/malls/MALL_ID/floors \
+curl -X GET http://localhost:3000/api/v1/mobile/malls/MALL_ID/floors \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 
 # 5. Get Stores by Mall ID
-curl -X GET http://localhost:3000/api/mobile/malls/MALL_ID/stores \
+curl -X GET http://localhost:3000/api/v1/mobile/malls/MALL_ID/stores \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 
 # 6. Get Stores by Mall ID and Floor ID
-curl -X GET "http://localhost:3000/api/mobile/malls/MALL_ID/stores?floorId=FLOOR_ID" \
+curl -X GET "http://localhost:3000/api/v1/mobile/malls/MALL_ID/stores?floorId=FLOOR_ID" \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 
 # 7. Search Stores in Mall
-curl -X GET "http://localhost:3000/api/mobile/malls/MALL_ID/stores/search?q=fashion" \
+curl -X GET "http://localhost:3000/api/v1/mobile/malls/MALL_ID/stores/search?q=fashion" \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 
 # 8. Get Store by ID
-curl -X GET http://localhost:3000/api/mobile/malls/stores/STORE_ID \
+curl -X GET http://localhost:3000/api/v1/mobile/malls/stores/STORE_ID \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 
@@ -123,7 +123,7 @@ curl -X GET http://localhost:3000/api/mobile/malls/stores/STORE_ID \
 ================================================================================
 
 # 1. Calculate Route to Store
-curl -X POST http://localhost:3000/api/mobile/navigation/route \
+curl -X POST http://localhost:3000/api/v1/mobile/navigation/route \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -137,7 +137,7 @@ curl -X POST http://localhost:3000/api/mobile/navigation/route \
 
 
 # 2. Get Navigation History
-curl -X GET "http://localhost:3000/api/mobile/navigation/history?page=1&limit=20" \
+curl -X GET "http://localhost:3000/api/v1/mobile/navigation/history?page=1&limit=20" \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 
@@ -146,17 +146,17 @@ curl -X GET "http://localhost:3000/api/mobile/navigation/history?page=1&limit=20
 ================================================================================
 
 # 1. Get All Active Offers
-curl -X GET "http://localhost:3000/api/mobile/offers?page=1&limit=20" \
+curl -X GET "http://localhost:3000/api/v1/mobile/offers?page=1&limit=20" \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 
 # 2. Get Offers by Mall
-curl -X GET "http://localhost:3000/api/mobile/offers?mallId=MALL_ID&page=1&limit=20" \
+curl -X GET "http://localhost:3000/api/v1/mobile/offers?mallId=MALL_ID&page=1&limit=20" \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 
 # 3. Get Offer by ID
-curl -X GET http://localhost:3000/api/mobile/offers/OFFER_ID \
+curl -X GET http://localhost:3000/api/v1/mobile/offers/OFFER_ID \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 
@@ -165,7 +165,7 @@ curl -X GET http://localhost:3000/api/mobile/offers/OFFER_ID \
 ================================================================================
 
 # 1. Claim Offer (Get Reward)
-curl -X POST http://localhost:3000/api/mobile/rewards/claim \
+curl -X POST http://localhost:3000/api/v1/mobile/rewards/claim \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -176,12 +176,12 @@ curl -X POST http://localhost:3000/api/mobile/rewards/claim \
 
 
 # 2. Get My Claimed Rewards
-curl -X GET "http://localhost:3000/api/mobile/rewards/my-claims?page=1&limit=20" \
+curl -X GET "http://localhost:3000/api/v1/mobile/rewards/my-claims?page=1&limit=20" \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 
 # 3. Redeem Reward (Store validates this)
-curl -X POST http://localhost:3000/api/mobile/rewards/redeem \
+curl -X POST http://localhost:3000/api/v1/mobile/rewards/redeem \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -194,7 +194,7 @@ curl -X POST http://localhost:3000/api/mobile/rewards/redeem \
 ================================================================================
 
 # 1. Save Store
-curl -X POST http://localhost:3000/api/mobile/saved/store \
+curl -X POST http://localhost:3000/api/v1/mobile/saved/store \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -203,7 +203,7 @@ curl -X POST http://localhost:3000/api/mobile/saved/store \
 
 
 # 2. Save Offer
-curl -X POST http://localhost:3000/api/mobile/saved/offer \
+curl -X POST http://localhost:3000/api/v1/mobile/saved/offer \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -212,20 +212,20 @@ curl -X POST http://localhost:3000/api/mobile/saved/offer \
 
 
 # 3. Get All Saved Items
-curl -X GET http://localhost:3000/api/mobile/saved \
+curl -X GET http://localhost:3000/api/v1/mobile/saved \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 
 # 4. Get Saved Items by Type
-curl -X GET "http://localhost:3000/api/mobile/saved?type=store" \
+curl -X GET "http://localhost:3000/api/v1/mobile/saved?type=store" \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
-curl -X GET "http://localhost:3000/api/mobile/saved?type=offer" \
+curl -X GET "http://localhost:3000/api/v1/mobile/saved?type=offer" \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 
 # 5. Remove Saved Item
-curl -X DELETE http://localhost:3000/api/mobile/saved/SAVED_ITEM_ID \
+curl -X DELETE http://localhost:3000/api/v1/mobile/saved/SAVED_ITEM_ID \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 
@@ -234,12 +234,12 @@ curl -X DELETE http://localhost:3000/api/mobile/saved/SAVED_ITEM_ID \
 ================================================================================
 
 # 1. Get All Messages
-curl -X GET "http://localhost:3000/api/mobile/messages?page=1&limit=20" \
+curl -X GET "http://localhost:3000/api/v1/mobile/messages?page=1&limit=20" \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 
 # 2. Mark Message as Read
-curl -X POST http://localhost:3000/api/mobile/messages/MESSAGE_ID/read \
+curl -X POST http://localhost:3000/api/v1/mobile/messages/MESSAGE_ID/read \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 
@@ -248,7 +248,7 @@ curl -X POST http://localhost:3000/api/mobile/messages/MESSAGE_ID/read \
 ================================================================================
 
 # 1. Start Parking Session
-curl -X POST http://localhost:3000/api/mobile/parking/start \
+curl -X POST http://localhost:3000/api/v1/mobile/parking/start \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -257,21 +257,21 @@ curl -X POST http://localhost:3000/api/mobile/parking/start \
 
 
 # 2. Get Active Parking Session
-curl -X GET http://localhost:3000/api/mobile/parking/active \
+curl -X GET http://localhost:3000/api/v1/mobile/parking/active \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 # Response: { "currentDuration": 45, "currentCharges": 50, ... }
 
 
 # 3. End Parking Session
-curl -X POST http://localhost:3000/api/mobile/parking/end \
+curl -X POST http://localhost:3000/api/v1/mobile/parking/end \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 # Response: { "duration": 120, "charges": 100, ... }
 
 
 # 4. Get Parking History
-curl -X GET "http://localhost:3000/api/mobile/parking/history?page=1&limit=20" \
+curl -X GET "http://localhost:3000/api/v1/mobile/parking/history?page=1&limit=20" \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 
@@ -280,7 +280,7 @@ curl -X GET "http://localhost:3000/api/mobile/parking/history?page=1&limit=20" \
 ================================================================================
 
 # 1. Admin Login
-curl -X POST http://localhost:3000/api/admin/auth/login \
+curl -X POST http://localhost:3000/api/v1/admin/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "admin@locomate.com",
@@ -291,7 +291,7 @@ curl -X POST http://localhost:3000/api/admin/auth/login \
 
 
 # 2. Admin Refresh Token
-curl -X POST http://localhost:3000/api/admin/auth/refresh-token \
+curl -X POST http://localhost:3000/api/v1/admin/auth/refresh-token \
   -H "Content-Type: application/json" \
   -d '{
     "refreshToken": "YOUR_ADMIN_REFRESH_TOKEN"
@@ -299,7 +299,7 @@ curl -X POST http://localhost:3000/api/admin/auth/refresh-token \
 
 
 # 3. Admin Logout
-curl -X POST http://localhost:3000/api/admin/auth/logout \
+curl -X POST http://localhost:3000/api/v1/admin/auth/logout \
   -H "Authorization: Bearer YOUR_ADMIN_ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -312,27 +312,27 @@ curl -X POST http://localhost:3000/api/admin/auth/logout \
 ================================================================================
 
 # Step 1: Send OTP
-curl -X POST http://localhost:3000/api/mobile/auth/send-otp \
+curl -X POST http://localhost:3000/api/v1/mobile/auth/send-otp \
   -H "Content-Type: application/json" \
   -d '{"phone": "+1234567890"}'
 
 # Step 2: Verify OTP (use OTP from response in dev mode)
-curl -X POST http://localhost:3000/api/mobile/auth/verify-otp \
+curl -X POST http://localhost:3000/api/v1/mobile/auth/verify-otp \
   -H "Content-Type: application/json" \
   -d '{"phone": "+1234567890", "otp": "123456"}'
 
 # Save the accessToken from response
 
 # Step 3: Get Malls
-curl -X GET http://localhost:3000/api/mobile/malls \
+curl -X GET http://localhost:3000/api/v1/mobile/malls \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 # Step 4: Get Stores in Mall
-curl -X GET http://localhost:3000/api/mobile/malls/MALL_ID/stores \
+curl -X GET http://localhost:3000/api/v1/mobile/malls/MALL_ID/stores \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 # Step 5: Calculate Route to Store
-curl -X POST http://localhost:3000/api/mobile/navigation/route \
+curl -X POST http://localhost:3000/api/v1/mobile/navigation/route \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -343,17 +343,17 @@ curl -X POST http://localhost:3000/api/mobile/navigation/route \
   }'
 
 # Step 6: Get Active Offers
-curl -X GET http://localhost:3000/api/mobile/offers \
+curl -X GET http://localhost:3000/api/v1/mobile/offers \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 # Step 7: Claim an Offer
-curl -X POST http://localhost:3000/api/mobile/rewards/claim \
+curl -X POST http://localhost:3000/api/v1/mobile/rewards/claim \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"offerId": "OFFER_ID"}'
 
 # Step 8: View My Rewards
-curl -X GET http://localhost:3000/api/mobile/rewards/my-claims \
+curl -X GET http://localhost:3000/api/v1/mobile/rewards/my-claims \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 
@@ -362,7 +362,7 @@ curl -X GET http://localhost:3000/api/mobile/rewards/my-claims \
 ================================================================================
 
 # Step 1: Admin Login
-curl -X POST http://localhost:3000/api/admin/auth/login \
+curl -X POST http://localhost:3000/api/v1/admin/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "admin@locomate.com",

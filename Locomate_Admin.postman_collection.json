@@ -1,0 +1,252 @@
+{
+  "info": {
+    "name": "Locomate - Admin Panel APIs",
+    "_postman_id": "admin-collection-v1",
+    "description": "Admin CRM APIs for Locomate Mall Management",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{admin_access_token}}"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "admin_access_token",
+      "value": ""
+    },
+    {
+      "key": "admin_refresh_token",
+      "value": ""
+    },
+    {
+      "key": "admin_email",
+      "value": "admin@locomate.com"
+    },
+    {
+      "key": "admin_password",
+      "value": "admin123"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Admin Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const res = pm.response.json();",
+                  "    if (res.data) {",
+                  "        pm.collectionVariables.set('admin_access_token', res.data.accessToken);",
+                  "        pm.collectionVariables.set('admin_refresh_token', res.data.refreshToken);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{admin_email}}\",\n  \"password\": \"{{admin_password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "admin",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Login with admin credentials"
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{admin_refresh_token}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/auth/refresh-token",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "admin",
+                "auth",
+                "refresh-token"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{admin_refresh_token}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/auth/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "admin",
+                "auth",
+                "logout"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics & Reports",
+      "item": [
+        {
+          "name": "Coming Soon",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/analytics",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "admin",
+                "analytics"
+              ]
+            },
+            "description": "Admin analytics endpoints will be added here"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Mall Management",
+      "item": [
+        {
+          "name": "Coming Soon",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/malls",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "admin",
+                "malls"
+              ]
+            },
+            "description": "CRUD operations for malls will be added here"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Store Management",
+      "item": [
+        {
+          "name": "Coming Soon",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/stores",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "admin",
+                "stores"
+              ]
+            },
+            "description": "CRUD operations for stores will be added here"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Offer Management",
+      "item": [
+        {
+          "name": "Coming Soon",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/offers",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "admin",
+                "offers"
+              ]
+            },
+            "description": "CRUD operations for offers will be added here"
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "Coming Soon",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": ["api", "v1", "admin",
+                "users"
+              ]
+            },
+            "description": "User management endpoints will be added here"
+          }
+        }
+      ]
+    }
+  ]
+}

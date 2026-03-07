@@ -47,7 +47,16 @@ if [ $? -ne 0 ]; then
 fi
 echo ""
 
-echo "🔄 Step 4: Restarting server..."
+echo "🔨 Step 4: Building TypeScript..."
+npm run build
+if [ $? -ne 0 ]; then
+    echo -e "${RED}❌ Build failed${NC}"
+    exit 1
+fi
+echo -e "${GREEN}✅ Build completed${NC}"
+echo ""
+
+echo "🔄 Step 5: Restarting server..."
 
 # Try different restart methods
 if command -v pm2 &> /dev/null; then

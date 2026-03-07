@@ -14,6 +14,24 @@ export class AuthRepository {
     });
   }
 
+  async createUserWithDetails(data: {
+    phone: string;
+    name: string;
+    avatar?: string;
+    gender?: string;
+    dob?: string;
+  }): Promise<User> {
+    return await prisma.user.create({
+      data: {
+        phone: data.phone,
+        name: data.name,
+        avatar: data.avatar,
+        gender: data.gender,
+        dob: data.dob ? new Date(data.dob) : undefined,
+      },
+    });
+  }
+
   async saveRefreshToken(userId: string, token: string, expiresAt: Date): Promise<RefreshToken> {
     return await prisma.refreshToken.create({
       data: {

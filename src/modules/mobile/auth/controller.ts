@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { AuthService } from './service';
-import { sendOTPSchema, verifyOTPSchema, refreshTokenSchema } from './schema';
+import { sendOTPSchema, checkUserSchema, verifyOTPSchema, signupSchema, refreshTokenSchema } from './schema';
 import { sendSuccess, sendError } from '../../../utils/response';
 import { AuthenticatedRequest, MobileAuthPayload } from '../../../types';
 
@@ -11,6 +11,16 @@ export class AuthController {
     this.service = new AuthService();
   }
 
+  checkUser = async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
+    try {
+      const { phone } = checkUserSchema.parse(request.body);
+      const result = await this.service.checkUserExists(phone);
+      sendSuccess(reply, result, 'User check completed');
+    } catch (error: any) {
+      sendError(reply, error.message, 'Failed to check user', 400);
+    }
+  };
+
   sendOTP = async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
     try {
       const { phone } = sendOTPSchema.parse(request.body);
@@ -18,6 +28,16 @@ export class AuthController {
       sendSuccess(reply, result, 'OTP sent successfully');
     } catch (error: any) {
       sendError(reply, error.message, 'Failed to send OTP', 400);
+    }
+  };
+
+  signup = async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
+    try {
+      const data = signupSchema.parse(request.body);
+      const result = await this.service.signup(data);
+      sendSuccess(reply, result, 'Signup successful', 201);
+    } catch (error: any) {
+      sendError(reply, error.message, 'Signup failed', 400);
     }
   };
 

@@ -2,7 +2,7 @@
   "info": {
     "name": "Locomate - Mobile APIs",
     "_postman_id": "mobile-collection-v1",
-    "description": "Mobile App APIs for Locomate Mall Navigation",
+    "description": "Complete Mobile App APIs - v1 with Signup & Login flows",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -41,7 +41,40 @@
       "name": "Authentication",
       "item": [
         {
-          "name": "1. Send OTP",
+          "name": "1. Check User Exists",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"{{phone}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/auth/check-user",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "mobile",
+                "auth",
+                "check-user"
+              ]
+            },
+            "description": "Check if user exists with this phone number. Returns exists: true/false"
+          }
+        },
+        {
+          "name": "2. Send OTP",
           "event": [
             {
               "listen": "test",
@@ -77,16 +110,53 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "auth",
                 "send-otp"
               ]
             },
-            "description": "Send OTP to user's phone number"
+            "description": "Send OTP after checking user exists"
           }
         },
         {
-          "name": "2. Verify OTP & Login",
+          "name": "3. Signup (New Users)",
+          "event": [],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"{{phone}}\",\n  \"name\": \"John Doe\",\n  \"avatar\": \"https://example.com/avatar.jpg\",\n  \"gender\": \"male\",\n  \"dob\": \"1990-01-15\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/auth/signup",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "mobile",
+                "auth",
+                "signup"
+              ]
+            },
+            "description": "Create new user account with name, avatar, gender, dob. No OTP verification - just user creation."
+          }
+        },
+        {
+          "name": "4. Login (Existing Users)",
           "event": [
             {
               "listen": "test",
@@ -123,15 +193,19 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "auth",
                 "verify-otp"
               ]
-            }
+            },
+            "description": "For EXISTING users (exists: true) - Login with phone and OTP"
           }
         },
         {
-          "name": "3. Refresh Token",
+          "name": "5. Refresh Token",
           "request": {
             "auth": {
               "type": "noauth"
@@ -152,15 +226,19 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "auth",
                 "refresh-token"
               ]
-            }
+            },
+            "description": "Refresh expired access token using refresh token. Returns new access and refresh tokens."
           }
         },
         {
-          "name": "4. Logout",
+          "name": "6. Logout",
           "request": {
             "method": "POST",
             "header": [
@@ -178,11 +256,15 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "auth",
                 "logout"
               ]
-            }
+            },
+            "description": "Logout user and invalidate refresh token. Requires authentication."
           }
         }
       ]
@@ -199,7 +281,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "users",
                 "profile"
               ]
@@ -225,7 +310,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "users",
                 "profile"
               ]
@@ -246,7 +334,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "malls"
               ],
               "query": [
@@ -276,7 +367,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "malls",
                 ":id"
               ],
@@ -298,7 +392,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "malls",
                 ":mallId",
                 "floors"
@@ -321,7 +418,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "malls",
                 ":mallId",
                 "stores"
@@ -351,7 +451,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "malls",
                 ":mallId",
                 "stores",
@@ -381,7 +484,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "malls",
                 "stores",
                 ":id"
@@ -419,7 +525,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "navigation",
                 "route"
               ]
@@ -435,7 +544,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "navigation",
                 "history"
               ],
@@ -466,7 +578,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "offers"
               ],
               "query": [
@@ -496,7 +611,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "offers",
                 ":id"
               ],
@@ -533,7 +651,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "rewards",
                 "claim"
               ]
@@ -549,7 +670,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "rewards",
                 "my-claims"
               ],
@@ -585,7 +709,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "rewards",
                 "redeem"
               ]
@@ -616,7 +743,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "saved",
                 "store"
               ]
@@ -642,7 +772,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "saved",
                 "offer"
               ]
@@ -658,7 +791,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "saved"
               ],
               "query": [
@@ -681,7 +817,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "saved",
                 ":id"
               ],
@@ -708,7 +847,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "messages"
               ],
               "query": [
@@ -733,7 +875,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "messages",
                 ":id",
                 "read"
@@ -771,7 +916,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "parking",
                 "start"
               ]
@@ -787,7 +935,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "parking",
                 "active"
               ]
@@ -803,7 +954,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "parking",
                 "end"
               ]
@@ -819,7 +973,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "mobile",
+              "path": [
+                "api",
+                "v1",
+                "mobile",
                 "parking",
                 "history"
               ],

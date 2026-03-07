@@ -14,6 +14,25 @@ export class AuthService {
     this.repository = new AuthRepository();
   }
 
+  async checkUserExists(phone: string): Promise<{ exists: boolean; user?: any }> {
+    const user = await this.repository.findUserByPhone(phone);
+    
+    if (user) {
+      return {
+        exists: true,
+        user: {
+          id: user.id,
+          phone: user.phone,
+          name: user.name,
+          email: user.email,
+          avatar: user.avatar,
+        },
+      };
+    }
+    
+    return { exists: false };
+  }
+
   async sendOTP(phone: string): Promise<{ message: string; otp?: string }> {
     const otp = generateOTP();
     await storeOTP(phone, otp);
@@ -29,6 +48,43 @@ export class AuthService {
     return { message: 'OTP sent successfully' };
   }
 
+  async signup(data: {
+    phone: string;
+    name: string;
+    avatar?: string;
+    gender?: string;
+    dob?: string;
+  }): Promise<{
+    user: any;
+  }> {
+    const existingUser = await this.repository.findUserByPhone(data.phone);
+
+    if (existingUser) {
+      throw new Error('User already exists. Please login instead.');
+    }
+
+    const user = await this.repository.createUserWithDetails({
+      phone: data.phone,
+      name: data.name,
+      avatar: data.avatar,
+      gender: data.gender,
+      dob: data.dob,
+    });
+
+    logger.info({ userId: user.id, phone: user.phone }, 'User created successfully');
+
+    return {
+      user: {
+        id: user.id,
+        phone: user.phone,
+        name: user.name,
+        avatar: user.avatar,
+        gender: user.gender,
+        dob: user.dob,
+      },
+    };
+  }
+
   async verifyOTPAndLogin(phone: string, otp: string): Promise<{
     accessToken: string;
     refreshToken: string;
@@ -40,10 +96,10 @@ export class AuthService {
       throw new Error('Invalid or expired OTP');
     }
 
-    let user = await this.repository.findUserByPhone(phone);
+    const user = await this.repository.findUserByPhone(phone);
 
     if (!user) {
-      user = await this.repository.createUser(phone);
+      throw new Error('User not found. Please signup first.');
     }
 
     if (!user.isActive) {
@@ -66,6 +122,8 @@ export class AuthService {
     expiresAt.setDate(expiresAt.getDate() + 7);
 
     await this.repository.saveRefreshToken(user.id, refreshToken, expiresAt);
+
+    logger.info({ userId: user.id, phone }, 'User logged in successfully');
 
     return {
       accessToken,

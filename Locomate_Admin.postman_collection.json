@@ -2,7 +2,7 @@
   "info": {
     "name": "Locomate - Admin Panel APIs",
     "_postman_id": "admin-collection-v1",
-    "description": "Admin CRM APIs for Locomate Mall Management",
+    "description": "Admin Panel APIs - v1 for Locomate CRM",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -41,7 +41,7 @@
       "name": "Authentication",
       "item": [
         {
-          "name": "Admin Login",
+          "name": "1. Admin Login",
           "event": [
             {
               "listen": "test",
@@ -78,16 +78,19 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "admin",
+              "path": [
+                "api",
+                "v1",
+                "admin",
                 "auth",
                 "login"
               ]
             },
-            "description": "Login with admin credentials"
+            "description": "Login with admin email and password. Returns access token and refresh token."
           }
         },
         {
-          "name": "Refresh Token",
+          "name": "2. Refresh Token",
           "request": {
             "auth": {
               "type": "noauth"
@@ -108,15 +111,19 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "admin",
+              "path": [
+                "api",
+                "v1",
+                "admin",
                 "auth",
                 "refresh-token"
               ]
-            }
+            },
+            "description": "Refresh expired admin access token using refresh token."
           }
         },
         {
-          "name": "Logout",
+          "name": "3. Logout",
           "request": {
             "method": "POST",
             "header": [
@@ -134,11 +141,15 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "admin",
+              "path": [
+                "api",
+                "v1",
+                "admin",
                 "auth",
                 "logout"
               ]
-            }
+            },
+            "description": "Logout admin and invalidate refresh token."
           }
         }
       ]
@@ -155,7 +166,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "admin",
+              "path": [
+                "api",
+                "v1",
+                "admin",
                 "analytics"
               ]
             },
@@ -176,7 +190,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "admin",
+              "path": [
+                "api",
+                "v1",
+                "admin",
                 "malls"
               ]
             },
@@ -197,7 +214,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "admin",
+              "path": [
+                "api",
+                "v1",
+                "admin",
                 "stores"
               ]
             },
@@ -218,7 +238,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "admin",
+              "path": [
+                "api",
+                "v1",
+                "admin",
                 "offers"
               ]
             },
@@ -239,7 +262,10 @@
               "host": [
                 "{{base_url}}"
               ],
-              "path": ["api", "v1", "admin",
+              "path": [
+                "api",
+                "v1",
+                "admin",
                 "users"
               ]
             },

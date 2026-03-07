@@ -16,7 +16,27 @@ curl http://localhost:3000/health
                       MOBILE APP APIs - AUTHENTICATION
 ================================================================================
 
-# 1. Send OTP
+# Authentication Flow:
+# Step 1: Check if user exists
+# Step 2: Send OTP
+# Step 3a: If user exists → Login (verify-otp)
+# Step 3b: If user new → Signup (with details)
+
+# 1. Check User Exists
+curl -X POST http://localhost:3000/api/v1/mobile/auth/check-user \
+  -H "Content-Type: application/json" \
+  -d '{
+    "phone": "+1234567890"
+  }'
+
+# Response (User Exists):
+# { "success": true, "data": { "exists": true, "user": {...} } }
+
+# Response (User Not Exists):
+# { "success": true, "data": { "exists": false } }
+
+
+# 2. Send OTP (After checking user)
 curl -X POST http://localhost:3000/api/v1/mobile/auth/send-otp \
   -H "Content-Type: application/json" \
   -d '{
@@ -26,7 +46,23 @@ curl -X POST http://localhost:3000/api/v1/mobile/auth/send-otp \
 # Response: { "success": true, "data": { "otp": "123456" } }
 
 
-# 2. Verify OTP & Login
+# 3a. Signup (Create new user - NO OTP verification)
+curl -X POST http://localhost:3000/api/v1/mobile/auth/signup \
+  -H "Content-Type: application/json" \
+  -d '{
+    "phone": "+1234567890",
+    "name": "John Doe",
+    "avatar": "https://example.com/avatar.jpg",
+    "gender": "male",
+    "dob": "1990-01-15"
+  }'
+
+# Response: { "success": true, "data": { "user": {...} } }
+# Note: avatar, gender, dob are optional. Only phone and name are required.
+# Note: This only creates user, does NOT return tokens. Use login after signup.
+
+
+# 3b. Login (If user EXISTS)
 curl -X POST http://localhost:3000/api/v1/mobile/auth/verify-otp \
   -H "Content-Type: application/json" \
   -d '{
@@ -34,10 +70,10 @@ curl -X POST http://localhost:3000/api/v1/mobile/auth/verify-otp \
     "otp": "123456"
   }'
 
-# Response: { "success": true, "data": { "accessToken": "...", "refreshToken": "...", "user": {...} } }
+# Response: { "success": true, "data": { "accessToken": "...", "refreshToken": "...", "user": {...}, "isNewUser": false } }
 
 
-# 3. Refresh Access Token
+# 4. Refresh Access Token
 curl -X POST http://localhost:3000/api/v1/mobile/auth/refresh-token \
   -H "Content-Type: application/json" \
   -d '{
@@ -45,7 +81,7 @@ curl -X POST http://localhost:3000/api/v1/mobile/auth/refresh-token \
   }'
 
 
-# 4. Logout
+# 5. Logout
 curl -X POST http://localhost:3000/api/v1/mobile/auth/logout \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
   -H "Content-Type: application/json" \

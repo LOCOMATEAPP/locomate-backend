@@ -19,6 +19,7 @@ import { parkingRoutes } from './modules/mobile/parking/routes';
 
 // Admin routes
 import { adminAuthRoutes } from './modules/admin/auth/routes';
+import { adminMallRoutes } from './modules/admin/malls/routes';
 
 export const buildApp = async (): Promise<FastifyInstance> => {
   const app = Fastify({
@@ -57,6 +58,7 @@ export const buildApp = async (): Promise<FastifyInstance> => {
 
   // Admin API routes - v1
   await app.register(adminAuthRoutes, { prefix: '/api/v1/admin/auth' });
+  await app.register(adminMallRoutes, { prefix: '/api/v1/admin' });
 
   return app;
 };

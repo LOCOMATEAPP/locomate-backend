@@ -34,6 +34,14 @@
     {
       "key": "admin_password",
       "value": "admin123"
+    },
+    {
+      "key": "mall_id",
+      "value": ""
+    },
+    {
+      "key": "floor_id",
+      "value": ""
     }
   ],
   "item": [
@@ -182,9 +190,34 @@
       "name": "Mall Management",
       "item": [
         {
-          "name": "Coming Soon",
+          "name": "1. Create Mall",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const res = pm.response.json();",
+                  "    if (res.data && res.data.id) {",
+                  "        pm.collectionVariables.set('mall_id', res.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
           "request": {
-            "method": "GET",
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Phoenix Marketcity\",\n  \"address\": \"15, Velachery Main Road, Indira Gandhi Nagar\",\n  \"city\": \"Chennai\",\n  \"state\": \"Tamil Nadu\",\n  \"zipCode\": \"600042\",\n  \"latitude\": 12.9926,\n  \"longitude\": 80.2207,\n  \"description\": \"One of Chennai's largest shopping malls with 600+ stores\",\n  \"image\": \"https://example.com/phoenix-mall.jpg\",\n  \"isActive\": true\n}"
+            },
             "url": {
               "raw": "{{base_url}}/api/v1/admin/malls",
               "host": [
@@ -197,7 +230,221 @@
                 "malls"
               ]
             },
-            "description": "CRUD operations for malls will be added here"
+            "description": "Create a new mall with location details"
+          }
+        },
+        {
+          "name": "2. Get All Malls",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/malls?page=1&limit=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "malls"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get paginated list of all malls"
+          }
+        },
+        {
+          "name": "3. Get Mall by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/malls/{{mall_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "malls",
+                "{{mall_id}}"
+              ]
+            },
+            "description": "Get detailed information about a specific mall including floors"
+          }
+        },
+        {
+          "name": "4. Update Mall",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Phoenix Marketcity - Updated\",\n  \"description\": \"Updated description for the mall\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/malls/{{mall_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "malls",
+                "{{mall_id}}"
+              ]
+            },
+            "description": "Update mall information"
+          }
+        },
+        {
+          "name": "5. Delete Mall",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/malls/{{mall_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "malls",
+                "{{mall_id}}"
+              ]
+            },
+            "description": "Soft delete a mall (sets deletedAt timestamp)"
+          }
+        },
+        {
+          "name": "6. Create Floor",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const res = pm.response.json();",
+                  "    if (res.data && res.data.id) {",
+                  "        pm.collectionVariables.set('floor_id', res.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mallId\": \"{{mall_id}}\",\n  \"name\": \"Ground Floor\",\n  \"floorNumber\": 0,\n  \"mapImage\": \"https://example.com/floor-0-map.jpg\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/floors",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "floors"
+              ]
+            },
+            "description": "Create a new floor for a mall"
+          }
+        },
+        {
+          "name": "7. Get Floors by Mall",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/malls/{{mall_id}}/floors",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "malls",
+                "{{mall_id}}",
+                "floors"
+              ]
+            },
+            "description": "Get all floors for a specific mall"
+          }
+        },
+        {
+          "name": "8. Update Floor",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ground Floor - Updated\",\n  \"mapImage\": \"https://example.com/floor-0-map-v2.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/floors/{{floor_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "floors",
+                "{{floor_id}}"
+              ]
+            },
+            "description": "Update floor information"
+          }
+        },
+        {
+          "name": "9. Delete Floor",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/floors/{{floor_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "floors",
+                "{{floor_id}}"
+              ]
+            },
+            "description": "Soft delete a floor (sets deletedAt timestamp)"
           }
         }
       ]

@@ -1,13 +1,14 @@
 #!/bin/bash
 
-echo "🚀 Locomate Backend - Update Script"
-echo "===================================="
+echo "🚀 Locomate - Full Deployment Script"
+echo "======================================"
 echo ""
 
 # Colors
 GREEN='\033[0;32m'
 RED='\033[0;31m'
-NC='\033[0m' # No Color
+BLUE='\033[0;34m'
+NC='\033[0m'
 
 # Check if we're in the right directory
 if [ ! -f "package.json" ]; then
@@ -15,7 +16,10 @@ if [ ! -f "package.json" ]; then
     exit 1
 fi
 
-echo "📥 Step 1: Pulling latest code from GitHub..."
+# ─────────────────────────────────────────
+# STEP 1: Pull latest code
+# ─────────────────────────────────────────
+echo -e "${BLUE}📥 Step 1: Pulling latest code from GitHub...${NC}"
 git pull origin main
 if [ $? -ne 0 ]; then
     echo -e "${RED}❌ Git pull failed${NC}"
@@ -24,16 +28,22 @@ fi
 echo -e "${GREEN}✅ Code updated${NC}"
 echo ""
 
-echo "📦 Step 2: Installing dependencies..."
+# ─────────────────────────────────────────
+# STEP 2: Backend - Install dependencies
+# ─────────────────────────────────────────
+echo -e "${BLUE}📦 Step 2: Installing backend dependencies...${NC}"
 npm install
 if [ $? -ne 0 ]; then
     echo -e "${RED}❌ npm install failed${NC}"
     exit 1
 fi
-echo -e "${GREEN}✅ Dependencies installed${NC}"
+echo -e "${GREEN}✅ Backend dependencies installed${NC}"
 echo ""
 
-echo "🗄️  Step 3: Updating database..."
+# ─────────────────────────────────────────
+# STEP 3: Database - Prisma
+# ─────────────────────────────────────────
+echo -e "${BLUE}🗄️  Step 3: Updating database...${NC}"
 npx prisma generate
 if [ $? -ne 0 ]; then
     echo -e "${RED}❌ Prisma generate failed${NC}"
@@ -47,51 +57,86 @@ if [ $? -ne 0 ]; then
 fi
 echo ""
 
-echo "🔨 Step 4: Building TypeScript..."
+# ─────────────────────────────────────────
+# STEP 4: Backend - Build TypeScript
+# ─────────────────────────────────────────
+echo -e "${BLUE}🔨 Step 4: Building backend (TypeScript)...${NC}"
 npm run build
 if [ $? -ne 0 ]; then
-    echo -e "${RED}❌ Build failed${NC}"
+    echo -e "${RED}❌ Backend build failed${NC}"
     exit 1
 fi
-echo -e "${GREEN}✅ Build completed${NC}"
+echo -e "${GREEN}✅ Backend build completed${NC}"
 echo ""
 
-echo "🔄 Step 5: Restarting server..."
+# ─────────────────────────────────────────
+# STEP 5: Frontend - Build React Admin
+# ─────────────────────────────────────────
+echo -e "${BLUE}⚛️  Step 5: Building React Admin Frontend...${NC}"
+if [ -d "locomate-admin" ]; then
+    npm install --prefix locomate-admin
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}❌ Frontend npm install failed${NC}"
+        exit 1
+    fi
 
-# Try different restart methods
+    npm run build --prefix locomate-admin
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}❌ Frontend build failed${NC}"
+        exit 1
+    fi
+
+    # Copy dist to /var/www/locomate-admin
+    sudo mkdir -p /var/www/locomate-admin
+    sudo cp -r locomate-admin/dist/. /var/www/locomate-admin/
+    sudo chmod -R 755 /var/www/locomate-admin
+    echo -e "${GREEN}✅ Frontend built and deployed to /var/www/locomate-admin${NC}"
+else
+    echo -e "${RED}⚠️  locomate-admin folder not found, skipping frontend build${NC}"
+fi
+echo ""
+
+# ─────────────────────────────────────────
+# STEP 6: Nginx - Update config if needed
+# ─────────────────────────────────────────
+echo -e "${BLUE}🌐 Step 6: Checking Nginx config...${NC}"
+NGINX_CONF="/etc/nginx/conf.d/locomate.conf"
+
+# Check if admin location already exists in nginx config
+if ! sudo grep -q "locomate-admin" "$NGINX_CONF" 2>/dev/null; then
+    echo "Adding admin panel to Nginx config..."
+    # Insert admin location block before the closing brace of the first server block
+    sudo sed -i '/proxy_cache_bypass \$http_upgrade;/a\    \n    # Admin Panel\n    location \/admin {\n        alias \/var\/www\/locomate-admin;\n        index index.html;\n        try_files \$uri \$uri\/ \/admin\/index.html;\n    }' "$NGINX_CONF"
+    sudo nginx -t && sudo systemctl reload nginx
+    echo -e "${GREEN}✅ Nginx updated - Admin panel at /admin${NC}"
+else
+    echo -e "${GREEN}✅ Nginx config already has admin panel${NC}"
+fi
+echo ""
+
+# ─────────────────────────────────────────
+# STEP 7: Restart backend server
+# ─────────────────────────────────────────
+echo -e "${BLUE}🔄 Step 7: Restarting backend server...${NC}"
 if command -v pm2 &> /dev/null; then
-    echo "Using PM2..."
     pm2 restart all
     pm2 save
     echo -e "${GREEN}✅ Server restarted with PM2${NC}"
-elif systemctl is-active --quiet locomate-backend; then
-    echo "Using systemctl..."
-    sudo systemctl restart locomate-backend
-    echo -e "${GREEN}✅ Server restarted with systemctl${NC}"
-elif [ -f "docker-compose.yml" ]; then
-    echo "Using Docker Compose..."
-    docker-compose down
-    docker-compose up -d --build
-    echo -e "${GREEN}✅ Server restarted with Docker${NC}"
 else
-    echo -e "${RED}❌ Could not find process manager (PM2/systemctl/docker)${NC}"
-    echo "Please restart manually"
+    echo -e "${RED}❌ PM2 not found${NC}"
     exit 1
 fi
 
 echo ""
-echo "🎉 Deployment completed successfully!"
+echo -e "${GREEN}🎉 Full deployment completed successfully!${NC}"
 echo ""
-echo "📊 Checking server status..."
+echo "📊 Server status:"
 sleep 3
-
-if command -v pm2 &> /dev/null; then
-    pm2 list
-elif systemctl is-active --quiet locomate-backend; then
-    sudo systemctl status locomate-backend --no-pager
-fi
+pm2 list
 
 echo ""
-echo "✅ Update complete! Test your API:"
-echo "   curl http://localhost:3000/health"
+echo "✅ Your apps are live:"
+echo "   🔗 API:          https://locomate.app/api/v1"
+echo "   🔗 Admin Panel:  https://locomate.app/admin"
+echo "   🔗 Health Check: https://locomate.app/health"
 echo ""

@@ -44,8 +44,8 @@ export default function Layout() {
     <div className="flex h-screen overflow-hidden" style={{ background: '#0f1117' }}>
       {/* Sidebar */}
       <aside
-        className={`${collapsed ? 'w-16' : 'w-60'} flex flex-col flex-shrink-0 transition-all duration-300`}
-        style={{ background: '#13151f', borderRight: '1px solid rgba(255,255,255,0.06)' }}
+        className={`${collapsed ? 'w-16' : 'w-60'} flex flex-col flex-shrink-0 transition-all duration-300 relative`}
+        style={{ background: '#13151f', borderRight: '1px solid rgba(255,255,255,0.06)', zIndex: 10 }}
       >
         {/* Logo */}
         <div className="flex items-center justify-between px-4 py-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>

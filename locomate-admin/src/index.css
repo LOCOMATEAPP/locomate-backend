@@ -117,18 +117,33 @@ body {
 /* Modal always on top of sidebar */
 .fixed.z-\[100\] { z-index: 100; }
 
+/* All inputs/selects/textareas force white text */
+input, select, textarea {
+  color: #e2e8f0 !important;
+}
+input::placeholder, textarea::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important;
+}
+
 /* Select dropdown dark background */
 select.input-dark {
   background-color: #1e2130 !important;
   color: #e2e8f0 !important;
 }
-select.input-dark option {
-  background-color: #1e2130;
-  color: #e2e8f0;
+select.input-dark option,
+select option {
+  background-color: #1e2130 !important;
+  color: #e2e8f0 !important;
 }
 
 /* Textarea dark */
 textarea.input-dark {
   color: #e2e8f0 !important;
   background: rgba(255,255,255,0.05) !important;
+}
+
+/* Stores page heading visibility */
+.fade-in h1, .fade-in h2, .fade-in h3 {
+  color: #f1f5f9 !important;
 }

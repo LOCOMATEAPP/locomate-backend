@@ -1,5 +1,6 @@
 import { X } from 'lucide-react';
 import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 interface Props {
   title: string;
@@ -18,32 +19,43 @@ export default function Modal({ title, onClose, children }: Props) {
     };
   }, [onClose]);
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-[200] overflow-y-auto"
-      style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)' }}
+      style={{
+        position: 'fixed', inset: 0, zIndex: 9999,
+        background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)',
+        overflowY: 'auto', display: 'flex', alignItems: 'flex-start',
+        justifyContent: 'center', padding: '24px 16px',
+      }}
       onClick={onClose}
     >
-      <div className="min-h-full flex items-start justify-center p-6">
-        <div
-          className="w-full max-w-lg rounded-2xl shadow-2xl fade-in"
-          style={{ background: '#1a1d2e', border: '1px solid rgba(255,255,255,0.1)' }}
-          onClick={e => e.stopPropagation()}
-        >
-          {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 sticky top-0 rounded-t-2xl"
-            style={{ background: '#1a1d2e', borderBottom: '1px solid rgba(255,255,255,0.07)', zIndex: 1 }}>
-            <h2 className="text-base font-semibold text-white">{title}</h2>
-            <button onClick={onClose}
-              className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-500 hover:text-white transition-colors"
-              style={{ background: 'rgba(255,255,255,0.05)' }}>
-              <X size={16} />
-            </button>
-          </div>
-          {/* Body */}
-          <div className="px-6 py-5">{children}</div>
+      <div
+        style={{
+          width: '100%', maxWidth: '520px', borderRadius: '16px',
+          background: '#1a1d2e', border: '1px solid rgba(255,255,255,0.1)',
+          boxShadow: '0 25px 50px rgba(0,0,0,0.5)', marginTop: '0',
+        }}
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '16px 24px', borderBottom: '1px solid rgba(255,255,255,0.07)',
+        }}>
+          <h2 style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: '#fff' }}>{title}</h2>
+          <button onClick={onClose} style={{
+            width: '32px', height: '32px', borderRadius: '8px', border: 'none',
+            background: 'rgba(255,255,255,0.05)', color: '#94a3b8',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer',
+          }}>
+            <X size={16} />
+          </button>
         </div>
+        {/* Body */}
+        <div style={{ padding: '20px 24px' }}>{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

@@ -70,29 +70,16 @@ echo -e "${GREEN}✅ Backend build completed${NC}"
 echo ""
 
 # ─────────────────────────────────────────
-# STEP 5: Frontend - Build React Admin
+# STEP 5: Frontend - Deploy pre-built React Admin
 # ─────────────────────────────────────────
-echo -e "${BLUE}⚛️  Step 5: Building React Admin Frontend...${NC}"
-if [ -d "locomate-admin" ]; then
-    npm install --prefix locomate-admin
-    if [ $? -ne 0 ]; then
-        echo -e "${RED}❌ Frontend npm install failed${NC}"
-        exit 1
-    fi
-
-    npm run build --prefix locomate-admin
-    if [ $? -ne 0 ]; then
-        echo -e "${RED}❌ Frontend build failed${NC}"
-        exit 1
-    fi
-
-    # Copy dist to /var/www/locomate-admin
+echo -e "${BLUE}⚛️  Step 5: Deploying React Admin Frontend...${NC}"
+if [ -d "locomate-admin/dist" ]; then
     sudo mkdir -p /var/www/locomate-admin
     sudo cp -r locomate-admin/dist/. /var/www/locomate-admin/
     sudo chmod -R 755 /var/www/locomate-admin
-    echo -e "${GREEN}✅ Frontend built and deployed to /var/www/locomate-admin${NC}"
+    echo -e "${GREEN}✅ Frontend deployed to /var/www/locomate-admin${NC}"
 else
-    echo -e "${RED}⚠️  locomate-admin folder not found, skipping frontend build${NC}"
+    echo -e "${RED}⚠️  locomate-admin/dist not found, skipping frontend deploy${NC}"
 fi
 echo ""
 

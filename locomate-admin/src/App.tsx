@@ -5,6 +5,10 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Malls from './pages/Malls';
 import Stores from './pages/Stores';
+import Users from './pages/Users';
+import Offers from './pages/Offers';
+import Analytics from './pages/Analytics';
+import ActivityLog from './pages/ActivityLog';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth();
@@ -20,6 +24,10 @@ function AppRoutes() {
         <Route index element={<Dashboard />} />
         <Route path="malls" element={<Malls />} />
         <Route path="stores" element={<Stores />} />
+        <Route path="users" element={<Users />} />
+        <Route path="offers" element={<Offers />} />
+        <Route path="analytics" element={<Analytics />} />
+        <Route path="activity" element={<ActivityLog />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
@@ -28,7 +36,7 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/admin">
       <AuthProvider>
         <AppRoutes />
       </AuthProvider>

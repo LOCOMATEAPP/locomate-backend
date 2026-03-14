@@ -1,23 +1,35 @@
-import { type ReactNode } from 'react';
 import { X } from 'lucide-react';
+import { useEffect } from 'react';
 
-interface ModalProps {
+interface Props {
   title: string;
   onClose: () => void;
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
-export default function Modal({ title, onClose, children }: ModalProps) {
+export default function Modal({ title, onClose, children }: Props) {
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [onClose]);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4 max-h-[90vh] flex flex-col">
-        <div className="flex items-center justify-between p-5 border-b">
-          <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-            <X size={20} />
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}
+      style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)' }}>
+      <div className="w-full max-w-lg rounded-2xl shadow-2xl fade-in max-h-[90vh] flex flex-col"
+        style={{ background: '#1a1d2e', border: '1px solid rgba(255,255,255,0.1)' }}
+        onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between px-6 py-4 flex-shrink-0"
+          style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+          <h2 className="text-base font-semibold text-white">{title}</h2>
+          <button onClick={onClose}
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-500 hover:text-white transition-colors"
+            style={{ background: 'rgba(255,255,255,0.05)' }}>
+            <X size={16} />
           </button>
         </div>
-        <div className="overflow-y-auto p-5">{children}</div>
+        <div className="px-6 py-5 overflow-y-auto">{children}</div>
       </div>
     </div>
   );

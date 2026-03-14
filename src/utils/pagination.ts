@@ -1,5 +1,5 @@
 import { env } from '../config/env';
-import { PaginationParams, PaginatedResponse } from '../types';
+import type { PaginatedResponse } from '../types';
 
 export const getPaginationParams = (
   page?: number,

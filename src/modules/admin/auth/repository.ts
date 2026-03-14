@@ -1,20 +1,12 @@
 import { prisma } from '../../../config/database';
-import { Admin, AdminRefreshToken } from '@prisma/client';
+import { AdminRefreshToken } from '@prisma/client';
 
 export class AdminAuthRepository {
-  async findByEmail(email: string): Promise<Admin | null> {
+  async findByEmail(email: string) {
     return await prisma.admin.findUnique({
       where: { email },
       include: {
-        role: {
-          include: {
-            permissions: {
-              include: {
-                permission: true,
-              },
-            },
-          },
-        },
+        role: true,
       },
     });
   }

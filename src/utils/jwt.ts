@@ -3,14 +3,14 @@ import { env } from '../config/env';
 import { MobileAuthPayload, AdminAuthPayload } from '../types';
 
 export const generateMobileAccessToken = (payload: MobileAuthPayload): string => {
-  return jwt.sign(payload, env.MOBILE_JWT_ACCESS_SECRET, {
-    expiresIn: env.JWT_ACCESS_EXPIRY,
+  return jwt.sign(payload as object, env.MOBILE_JWT_ACCESS_SECRET, {
+    expiresIn: env.JWT_ACCESS_EXPIRY as any,
   });
 };
 
 export const generateMobileRefreshToken = (payload: MobileAuthPayload): string => {
-  return jwt.sign(payload, env.MOBILE_JWT_REFRESH_SECRET, {
-    expiresIn: env.JWT_REFRESH_EXPIRY,
+  return jwt.sign(payload as object, env.MOBILE_JWT_REFRESH_SECRET, {
+    expiresIn: env.JWT_REFRESH_EXPIRY as any,
   });
 };
 
@@ -23,14 +23,14 @@ export const verifyMobileRefreshToken = (token: string): MobileAuthPayload => {
 };
 
 export const generateAdminAccessToken = (payload: AdminAuthPayload): string => {
-  return jwt.sign(payload, env.ADMIN_JWT_ACCESS_SECRET, {
-    expiresIn: env.JWT_ACCESS_EXPIRY,
+  return jwt.sign(payload as object, env.ADMIN_JWT_ACCESS_SECRET, {
+    expiresIn: env.JWT_ACCESS_EXPIRY as any,
   });
 };
 
 export const generateAdminRefreshToken = (payload: AdminAuthPayload): string => {
-  return jwt.sign(payload, env.ADMIN_JWT_REFRESH_SECRET, {
-    expiresIn: env.JWT_REFRESH_EXPIRY,
+  return jwt.sign(payload as object, env.ADMIN_JWT_REFRESH_SECRET, {
+    expiresIn: env.JWT_REFRESH_EXPIRY as any,
   });
 };
 

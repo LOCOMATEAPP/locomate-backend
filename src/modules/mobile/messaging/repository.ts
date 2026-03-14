@@ -1,5 +1,5 @@
 import { prisma } from '../../../config/database';
-import { Message, MessageRead } from '@prisma/client';
+import { MessageRead } from '@prisma/client';
 
 export class MessagingRepository {
   async findMessages(skip?: number, take?: number) {

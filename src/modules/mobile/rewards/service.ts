@@ -38,12 +38,12 @@ export class RewardService {
     expiresAt.setDate(expiresAt.getDate() + 30);
 
     // Create claim
-    const claim = await this.repository.createClaim(userId, offerId, rewardCode, expiresAt);
+    const newClaim = await this.repository.createClaim(userId, offerId, rewardCode, expiresAt);
 
     // Increment claim count
     await this.offerRepository.incrementClaimCount(offerId);
 
-    return claim;
+    return newClaim;
   }
 
   async getMyClaims(userId: string, page?: number, limit?: number) {
@@ -72,7 +72,7 @@ export class RewardService {
   }
 
   async redeemReward(rewardCode: string) {
-    const claim = await this.validateReward(rewardCode);
+    await this.validateReward(rewardCode);
     return await this.repository.redeemReward(rewardCode);
   }
 }

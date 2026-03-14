@@ -1,0 +1,105 @@
+export declare class MallService {
+    private repository;
+    constructor();
+    getMalls(city?: string, page?: number, limit?: number): Promise<import("../../../types").PaginatedResponse<{
+        name: string;
+        id: string;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+        address: string;
+        city: string;
+        state: string;
+        zipCode: string;
+        latitude: number;
+        longitude: number;
+        description: string | null;
+        image: string | null;
+        deletedAt: Date | null;
+    }>>;
+    getMallById(id: string): Promise<{
+        name: string;
+        id: string;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+        address: string;
+        city: string;
+        state: string;
+        zipCode: string;
+        latitude: number;
+        longitude: number;
+        description: string | null;
+        image: string | null;
+        deletedAt: Date | null;
+    }>;
+    getFloorsByMallId(mallId: string): Promise<{
+        name: string;
+        id: string;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+        deletedAt: Date | null;
+        mallId: string;
+        floorNumber: number;
+        mapImage: string | null;
+    }[]>;
+    getStoresByMallId(mallId: string, floorId?: string): Promise<{
+        name: string;
+        id: string;
+        phone: string | null;
+        email: string | null;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+        description: string | null;
+        deletedAt: Date | null;
+        mallId: string;
+        floorId: string;
+        category: string;
+        logo: string | null;
+        images: import("@prisma/client/runtime/library").JsonValue | null;
+        website: string | null;
+        coordinateX: number;
+        coordinateY: number;
+    }[]>;
+    searchStores(mallId: string, query: string): Promise<{
+        name: string;
+        id: string;
+        phone: string | null;
+        email: string | null;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+        description: string | null;
+        deletedAt: Date | null;
+        mallId: string;
+        floorId: string;
+        category: string;
+        logo: string | null;
+        images: import("@prisma/client/runtime/library").JsonValue | null;
+        website: string | null;
+        coordinateX: number;
+        coordinateY: number;
+    }[]>;
+    getStoreById(id: string): Promise<{
+        name: string;
+        id: string;
+        phone: string | null;
+        email: string | null;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+        description: string | null;
+        deletedAt: Date | null;
+        mallId: string;
+        floorId: string;
+        category: string;
+        logo: string | null;
+        images: import("@prisma/client/runtime/library").JsonValue | null;
+        website: string | null;
+        coordinateX: number;
+        coordinateY: number;
+    }>;
+}
+//# sourceMappingURL=service.d.ts.map

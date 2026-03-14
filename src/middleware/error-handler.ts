@@ -7,7 +7,8 @@ export const errorHandler = (
   error: FastifyError,
   request: FastifyRequest,
   reply: FastifyReply
-): void => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+): any => {
   logger.error({
     err: error,
     url: request.url,

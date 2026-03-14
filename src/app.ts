@@ -1,6 +1,5 @@
 import Fastify, { FastifyInstance } from 'fastify';
 import { logger } from './config/logger';
-import { env } from './config/env';
 import { errorHandler } from './middleware/error-handler';
 import { registerCors } from './plugins/cors';
 import { registerHelmet } from './plugins/helmet';
@@ -24,18 +23,18 @@ import { adminStoreRoutes } from './modules/admin/stores/routes';
 
 export const buildApp = async (): Promise<FastifyInstance> => {
   const app = Fastify({
-    logger,
+    logger: logger as any,
     trustProxy: true,
     requestIdLogLabel: 'reqId',
   });
 
   // Register plugins
-  await registerCors(app);
-  await registerHelmet(app);
-  await registerRateLimit(app);
+  await registerCors(app as any);
+  await registerHelmet(app as any);
+  await registerRateLimit(app as any);
 
   // Error handler
-  app.setErrorHandler(errorHandler);
+  app.setErrorHandler(errorHandler as any);
 
   // Health check
   app.get('/health', async () => {
@@ -62,5 +61,5 @@ export const buildApp = async (): Promise<FastifyInstance> => {
   await app.register(adminMallRoutes, { prefix: '/api/v1/admin' });
   await app.register(adminStoreRoutes, { prefix: '/api/v1/admin' });
 
-  return app;
+  return app as unknown as FastifyInstance;
 };

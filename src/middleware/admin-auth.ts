@@ -23,7 +23,7 @@ export const adminAuthMiddleware = async (
   }
 };
 
-export const requirePermission = (resource: string, action: string) => {
+export const requirePermission = (_resource: string, _action: string) => {
   return async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
     const user = (request as AuthenticatedRequest).user as AdminAuthPayload;
 

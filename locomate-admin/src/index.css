@@ -62,7 +62,7 @@ body {
 .input-dark {
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.1);
-  color: #e2e8f0;
+  color: #e2e8f0 !important;
   transition: border-color 0.15s ease;
 }
 .input-dark:focus {
@@ -70,7 +70,11 @@ body {
   border-color: #6366f1;
   box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
 }
-.input-dark::placeholder { color: #475569; }
+.input-dark::placeholder { color: #475569 !important; }
+.input-dark option {
+  background: #1a1d2e;
+  color: #e2e8f0;
+}
 
 .badge-active {
   background: rgba(16,185,129,0.15);
@@ -103,4 +107,27 @@ body {
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: 6px;
+}
+
+/* Contrast fixes */
+.fade-in p.text-slate-500 { color: #94a3b8 !important; }
+.fade-in span.text-slate-500 { color: #94a3b8 !important; }
+
+/* Modal always on top of sidebar */
+.fixed.z-\[100\] { z-index: 100; }
+
+/* Select dropdown dark background */
+select.input-dark {
+  background-color: #1e2130 !important;
+  color: #e2e8f0 !important;
+}
+select.input-dark option {
+  background-color: #1e2130;
+  color: #e2e8f0;
+}
+
+/* Textarea dark */
+textarea.input-dark {
+  color: #e2e8f0 !important;
+  background: rgba(255,255,255,0.05) !important;
 }

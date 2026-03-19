@@ -74,10 +74,11 @@ echo ""
 # ─────────────────────────────────────────
 echo -e "${BLUE}⚛️  Step 5: Deploying React Admin Frontend...${NC}"
 if [ -d "locomate-admin/dist" ]; then
-    sudo mkdir -p /var/www/locomate-admin
-    sudo cp -r locomate-admin/dist/. /var/www/locomate-admin/
-    sudo chmod -R 755 /var/www/locomate-admin
-    echo -e "${GREEN}✅ Frontend deployed to /var/www/locomate-admin${NC}"
+    sudo mkdir -p /var/www/html/admin
+    sudo rm -rf /var/www/html/admin/*
+    sudo cp -r locomate-admin/dist/. /var/www/html/admin/
+    sudo chmod -R 755 /var/www/html/admin
+    echo -e "${GREEN}✅ Frontend deployed to /var/www/html/admin${NC}"
 else
     echo -e "${RED}⚠️  locomate-admin/dist not found, skipping frontend deploy${NC}"
 fi

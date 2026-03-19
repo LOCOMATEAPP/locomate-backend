@@ -84,6 +84,20 @@ fi
 echo ""
 
 # ─────────────────────────────────────────
+# STEP 5b: Landing Page - Deploy static HTML
+# ─────────────────────────────────────────
+echo -e "${BLUE}🌐 Step 5b: Deploying Landing Page...${NC}"
+if [ -f "landing/index.html" ]; then
+    sudo mkdir -p /var/www/locomate-landing
+    sudo cp -r landing/. /var/www/locomate-landing/
+    sudo chmod -R 755 /var/www/locomate-landing
+    echo -e "${GREEN}✅ Landing page deployed to /var/www/locomate-landing${NC}"
+else
+    echo -e "${RED}⚠️  landing/index.html not found, skipping landing deploy${NC}"
+fi
+echo ""
+
+# ─────────────────────────────────────────
 # STEP 6: Nginx - Update config if needed
 # ─────────────────────────────────────────
 echo -e "${BLUE}🌐 Step 6: Checking Nginx config...${NC}"

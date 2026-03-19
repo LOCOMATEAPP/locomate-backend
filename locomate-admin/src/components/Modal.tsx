@@ -33,7 +33,9 @@ export default function Modal({ title, onClose, children }: Props) {
         style={{
           width: '100%', maxWidth: '520px', borderRadius: '16px',
           background: '#1a1d2e', border: '1px solid rgba(255,255,255,0.1)',
-          boxShadow: '0 25px 50px rgba(0,0,0,0.5)', marginTop: '0',
+          boxShadow: '0 25px 50px rgba(0,0,0,0.5)',
+          display: 'flex', flexDirection: 'column',
+          maxHeight: 'calc(100vh - 48px)',
         }}
         onClick={e => e.stopPropagation()}
       >
@@ -41,6 +43,7 @@ export default function Modal({ title, onClose, children }: Props) {
         <div style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           padding: '16px 24px', borderBottom: '1px solid rgba(255,255,255,0.07)',
+          flexShrink: 0,
         }}>
           <h2 style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: '#fff' }}>{title}</h2>
           <button onClick={onClose} style={{
@@ -53,7 +56,7 @@ export default function Modal({ title, onClose, children }: Props) {
           </button>
         </div>
         {/* Body */}
-        <div style={{ padding: '20px 24px' }}>{children}</div>
+        <div style={{ padding: '20px 24px', overflowY: 'auto', flex: 1 }}>{children}</div>
       </div>
     </div>,
     document.body

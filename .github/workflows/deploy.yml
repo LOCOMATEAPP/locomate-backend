@@ -23,7 +23,13 @@ jobs:
             cd /home/ec2-user/locomate-backend
             git pull origin main
             npm install
+            npm rebuild bcrypt
             npx prisma generate
             npx prisma migrate deploy
-            pm2 restart all
+            sudo rm -rf /var/www/html/admin/*
+            sudo cp -r locomate-admin/dist/. /var/www/html/admin/
+            sudo mkdir -p /var/www/locomate-landing
+            sudo cp -r landing/. /var/www/locomate-landing/
+            pm2 delete all
+            pm2 start npm --name server -- run dev
             pm2 save

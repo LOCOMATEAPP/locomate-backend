@@ -10,6 +10,8 @@ import Offers from './pages/Offers';
 import Analytics from './pages/Analytics';
 import ActivityLog from './pages/ActivityLog';
 
+import Banners from './pages/Banners';
+
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth();
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
@@ -28,6 +30,7 @@ function AppRoutes() {
         <Route path="offers" element={<Offers />} />
         <Route path="analytics" element={<Analytics />} />
         <Route path="activity" element={<ActivityLog />} />
+        <Route path="banners" element={<Banners />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

@@ -24,6 +24,9 @@ const routes_9 = require("./modules/mobile/parking/routes");
 const routes_10 = require("./modules/admin/auth/routes");
 const routes_11 = require("./modules/admin/malls/routes");
 const routes_12 = require("./modules/admin/stores/routes");
+const routes_13 = require("./modules/admin/users/routes");
+const routes_14 = require("./modules/admin/offers/routes");
+const routes_15 = require("./modules/admin/analytics/routes");
 const buildApp = async () => {
     const app = (0, fastify_1.default)({
         logger: logger_1.logger,
@@ -58,6 +61,9 @@ const buildApp = async () => {
     await app.register(routes_10.adminAuthRoutes, { prefix: '/api/v1/admin/auth' });
     await app.register(routes_11.adminMallRoutes, { prefix: '/api/v1/admin' });
     await app.register(routes_12.adminStoreRoutes, { prefix: '/api/v1/admin' });
+    await app.register(routes_13.adminUserRoutes, { prefix: '/api/v1/admin' });
+    await app.register(routes_14.adminOfferRoutes, { prefix: '/api/v1/admin' });
+    await app.register(routes_15.adminAnalyticsRoutes, { prefix: '/api/v1/admin' });
     return app;
 };
 exports.buildApp = buildApp;

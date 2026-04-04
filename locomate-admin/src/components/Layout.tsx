@@ -1,7 +1,7 @@
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {
   Building2, Store, LogOut, LayoutDashboard, Menu, X,
-  Users, Tag, BarChart3, Activity, ChevronRight, Bell, Settings
+  Users, Tag, BarChart3, Activity, ChevronRight, Bell, Settings, Image
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
@@ -12,6 +12,7 @@ const navItems = [
   { to: '/stores', icon: Store, label: 'Stores', end: false },
   { to: '/users', icon: Users, label: 'Users', end: false },
   { to: '/offers', icon: Tag, label: 'Offers', end: false },
+  { to: '/banners', icon: Image, label: 'Banners', end: false },
   { to: '/analytics', icon: BarChart3, label: 'Analytics', end: false },
   { to: '/activity', icon: Activity, label: 'Activity Log', end: false },
 ];
@@ -22,6 +23,7 @@ const pageTitles: Record<string, string> = {
   '/stores': 'Store Management',
   '/users': 'User Management',
   '/offers': 'Offer Management',
+  '/banners': 'Banner Management',
   '/analytics': 'Analytics',
   '/activity': 'Activity Log',
 };

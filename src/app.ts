@@ -15,11 +15,18 @@ import { rewardRoutes } from './modules/mobile/rewards/routes';
 import { savedRoutes } from './modules/mobile/saved/routes';
 import { messagingRoutes } from './modules/mobile/messaging/routes';
 import { parkingRoutes } from './modules/mobile/parking/routes';
+import { mobileBannerRoutes } from './modules/mobile/banners/routes';
 
 // Admin routes
 import { adminAuthRoutes } from './modules/admin/auth/routes';
 import { adminMallRoutes } from './modules/admin/malls/routes';
 import { adminStoreRoutes } from './modules/admin/stores/routes';
+import { adminUserRoutes } from './modules/admin/users/routes';
+import { adminOfferRoutes } from './modules/admin/offers/routes';
+import { adminAnalyticsRoutes } from './modules/admin/analytics/routes';
+import { adminBannerRoutes } from './modules/admin/banners/routes';
+import { adminBannerRoutes } from './modules/admin/banners/routes';
+import { mobileBannerRoutes } from './modules/mobile/banners/routes';
 
 export const buildApp = async (): Promise<FastifyInstance> => {
   const app = Fastify({
@@ -55,11 +62,18 @@ export const buildApp = async (): Promise<FastifyInstance> => {
   await app.register(savedRoutes, { prefix: '/api/v1/mobile/saved' });
   await app.register(messagingRoutes, { prefix: '/api/v1/mobile/messages' });
   await app.register(parkingRoutes, { prefix: '/api/v1/mobile/parking' });
+  await app.register(mobileBannerRoutes, { prefix: '/api/v1/mobile' });
 
   // Admin API routes - v1
   await app.register(adminAuthRoutes, { prefix: '/api/v1/admin/auth' });
   await app.register(adminMallRoutes, { prefix: '/api/v1/admin' });
   await app.register(adminStoreRoutes, { prefix: '/api/v1/admin' });
+  await app.register(adminUserRoutes, { prefix: '/api/v1/admin' });
+  await app.register(adminOfferRoutes, { prefix: '/api/v1/admin' });
+  await app.register(adminAnalyticsRoutes, { prefix: '/api/v1/admin' });
+  await app.register(adminBannerRoutes, { prefix: '/api/v1/admin' });
+  await app.register(adminBannerRoutes, { prefix: '/api/v1/admin' });
+  await app.register(mobileBannerRoutes, { prefix: '/api/v1/mobile/banners' });
 
   return app as unknown as FastifyInstance;
 };

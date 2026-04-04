@@ -1,114 +1,124 @@
-import { BarChart3, TrendingUp, MapPin, ArrowUpRight, ArrowDownRight } from 'lucide-react';
-
-const metrics = [
-  { label: 'Total Visits', value: '18,420', change: '+12.5%', up: true, color: '#6366f1' },
-  { label: 'Unique Users', value: '4,231', change: '+8.2%', up: true, color: '#8b5cf6' },
-  { label: 'Avg. Session', value: '24 min', change: '+3.1%', up: true, color: '#06b6d4' },
-  { label: 'Bounce Rate', value: '18.4%', change: '-2.3%', up: false, color: '#10b981' },
-];
-
-const topMalls = [
-  { name: 'Central Plaza', visits: 8420, pct: 85 },
-  { name: 'Phoenix Marketcity', visits: 5210, pct: 52 },
-  { name: 'Nexus Mall', visits: 3100, pct: 31 },
-  { name: 'Orion Mall', visits: 1690, pct: 17 },
-];
-
-const topCategories = [
-  { name: 'Fashion & Apparel', pct: 34, color: '#ec4899' },
-  { name: 'Food & Dining', pct: 28, color: '#f59e0b' },
-  { name: 'Electronics', pct: 18, color: '#06b6d4' },
-  { name: 'Beauty & Wellness', pct: 12, color: '#a78bfa' },
-  { name: 'Others', pct: 8, color: '#64748b' },
-];
+import { useEffect, useState } from 'react';
+import { BarChart3, TrendingUp, Users, Store, Tag, Award, Car } from 'lucide-react';
+import { analyticsApi } from '../api/analytics';
 
 export default function Analytics() {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    analyticsApi.get().then(r => { setData(r.data.data); setLoading(false); }).catch(() => setLoading(false));
+  }, []);
+
+  if (loading) return (
+    <div className="fade-in flex items-center justify-center h-64">
+      <div className="w-6 h-6 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
+    </div>
+  );
+
+  const metrics = [
+    { label: 'Total Users', value: data?.totalUsers ?? '—', icon: Users, color: '#6366f1' },
+    { label: 'Active Users (30d)', value: data?.activeUsers ?? '—', icon: TrendingUp, color: '#8b5cf6' },
+    { label: 'Total Stores', value: data?.totalStores ?? '—', icon: Store, color: '#06b6d4' },
+    { label: 'Active Offers', value: data?.activeOffers ?? '—', icon: Tag, color: '#f59e0b' },
+    { label: 'Total Claims', value: data?.totalClaims ?? '—', icon: Award, color: '#10b981' },
+    { label: 'Redeemed', value: data?.redeemedClaims ?? '—', icon: Award, color: '#ec4899' },
+  ];
+
   return (
     <div className="fade-in space-y-5">
       <div>
         <p className="text-xs text-slate-500 uppercase tracking-widest mb-0.5">Insights</p>
-        <p className="text-slate-400 text-sm">Sample analytics — live data integration coming soon</p>
+        <p className="text-slate-400 text-sm">Live data from your platform</p>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {metrics.map(({ label, value, change, up, color }) => (
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+        {metrics.map(({ label, value, icon: Icon, color }) => (
           <div key={label} className="stat-card rounded-2xl p-5">
             <div className="flex items-start justify-between mb-3">
-              <p className="text-xs text-slate-500 uppercase tracking-wide">{label}</p>
-              <span className={`flex items-center gap-0.5 text-xs font-medium ${up ? 'text-emerald-400' : 'text-red-400'}`}>
-                {up ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
-                {change}
-              </span>
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: `${color}20` }}>
+                <Icon size={16} style={{ color }} />
+              </div>
             </div>
-            <p className="text-2xl font-bold text-white">{value}</p>
-            <div className="mt-3 h-1 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
-              <div className="h-1 rounded-full" style={{ width: '65%', background: color }} />
-            </div>
+            <p className="text-2xl font-bold text-white">{value?.toLocaleString?.() ?? value}</p>
+            <p className="text-xs text-slate-500 mt-1">{label}</p>
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        {/* Top Malls */}
+      {/* Parking Stats */}
+      {data?.parking && (
         <div className="rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
           <div className="flex items-center gap-2 mb-4">
-            <MapPin size={15} className="text-indigo-400" />
-            <h3 className="text-sm font-semibold text-white">Top Malls by Visits</h3>
+            <Car size={15} className="text-indigo-400" />
+            <h3 className="text-sm font-semibold text-white">Parking Stats</h3>
           </div>
-          <div className="space-y-4">
-            {topMalls.map(({ name, visits, pct }) => (
-              <div key={name}>
-                <div className="flex items-center justify-between mb-1.5">
-                  <p className="text-sm text-slate-300">{name}</p>
-                  <p className="text-xs text-slate-500">{visits.toLocaleString()}</p>
-                </div>
-                <div className="h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
-                  <div className="h-1.5 rounded-full transition-all" style={{ width: `${pct}%`, background: 'linear-gradient(90deg, #6366f1, #8b5cf6)' }} />
-                </div>
+          <div className="grid grid-cols-3 gap-4">
+            {[
+              { label: 'Total Sessions', value: data.parking.totalSessions },
+              { label: 'Active Now', value: data.parking.activeSessions },
+              { label: 'Total Revenue', value: `₹${(data.parking.totalRevenue || 0).toFixed(0)}` },
+            ].map(({ label, value }) => (
+              <div key={label} className="text-center p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)' }}>
+                <p className="text-xl font-bold text-white">{value}</p>
+                <p className="text-xs text-slate-500 mt-1">{label}</p>
               </div>
             ))}
           </div>
         </div>
+      )}
 
-        {/* Category breakdown */}
+      {/* Top Stores */}
+      {data?.topStores?.length > 0 && (
         <div className="rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
           <div className="flex items-center gap-2 mb-4">
             <BarChart3 size={15} className="text-purple-400" />
-            <h3 className="text-sm font-semibold text-white">Category Breakdown</h3>
+            <h3 className="text-sm font-semibold text-white">Top Stores by Navigation</h3>
           </div>
           <div className="space-y-3">
-            {topCategories.map(({ name, pct, color }) => (
-              <div key={name} className="flex items-center gap-3">
-                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: color }} />
-                <p className="text-sm text-slate-300 flex-1">{name}</p>
-                <div className="w-24 h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
-                  <div className="h-1.5 rounded-full" style={{ width: `${pct * 2.5}%`, background: color }} />
+            {data.topStores.map((store: any, i: number) => {
+              const max = data.topStores[0]?._count?.routeHistory || 1;
+              const pct = Math.round((store._count?.routeHistory / max) * 100);
+              return (
+                <div key={store.id}>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-slate-600 w-4">{i + 1}</span>
+                      <p className="text-sm text-slate-300">{store.name}</p>
+                    </div>
+                    <p className="text-xs text-slate-500">{store._count?.routeHistory} routes</p>
+                  </div>
+                  <div className="h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                    <div className="h-1.5 rounded-full" style={{ width: `${pct}%`, background: 'linear-gradient(90deg, #6366f1, #8b5cf6)' }} />
+                  </div>
                 </div>
-                <p className="text-xs text-slate-500 w-8 text-right">{pct}%</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
-      </div>
+      )}
 
-      {/* Weekly trend placeholder */}
-      <div className="rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
-        <div className="flex items-center gap-2 mb-4">
-          <TrendingUp size={15} className="text-cyan-400" />
-          <h3 className="text-sm font-semibold text-white">Weekly Visits Trend</h3>
+      {/* Redemption Rate */}
+      {data?.totalClaims > 0 && (
+        <div className="rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+          <div className="flex items-center gap-2 mb-4">
+            <TrendingUp size={15} className="text-cyan-400" />
+            <h3 className="text-sm font-semibold text-white">Offer Redemption Rate</h3>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="flex-1">
+              <div className="flex justify-between mb-2">
+                <span className="text-xs text-slate-500">Redeemed</span>
+                <span className="text-xs text-slate-400">{data.redeemedClaims} / {data.totalClaims}</span>
+              </div>
+              <div className="h-3 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                <div className="h-3 rounded-full" style={{ width: `${Math.round((data.redeemedClaims / data.totalClaims) * 100)}%`, background: 'linear-gradient(90deg, #10b981, #06b6d4)' }} />
+              </div>
+            </div>
+            <p className="text-2xl font-bold text-white">{Math.round((data.redeemedClaims / data.totalClaims) * 100)}%</p>
+          </div>
         </div>
-        <div className="flex items-end gap-2 h-24">
-          {[40, 65, 45, 80, 55, 90, 70].map((h, i) => (
-            <div key={i} className="flex-1 rounded-t-md transition-all hover:opacity-80"
-              style={{ height: `${h}%`, background: i === 5 ? 'linear-gradient(180deg, #6366f1, #8b5cf6)' : 'rgba(99,102,241,0.25)' }} />
-          ))}
-        </div>
-        <div className="flex gap-2 mt-2">
-          {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(d => (
-            <p key={d} className="flex-1 text-center text-xs text-slate-600">{d}</p>
-          ))}
-        </div>
-      </div>
+      )}
     </div>
   );
 }

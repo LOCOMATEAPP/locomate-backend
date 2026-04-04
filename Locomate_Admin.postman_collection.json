@@ -43,10 +43,10 @@
       "key": "floor_id",
       "value": ""
     },
-    {
-      "key": "store_id",
-      "value": ""
-    }
+    {"key": "store_id", "value": ""},
+    {"key": "offer_id", "value": ""},
+    {"key": "user_id", "value": ""},
+    {"key": "banner_id", "value": ""}
   ],
   "item": [
     {
@@ -170,22 +170,15 @@
       "name": "Analytics & Reports",
       "item": [
         {
-          "name": "Coming Soon",
+          "name": "Get Analytics",
           "request": {
             "method": "GET",
             "url": {
               "raw": "{{base_url}}/api/v1/admin/analytics",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "admin",
-                "analytics"
-              ]
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "analytics"]
             },
-            "description": "Admin analytics endpoints will be added here"
+            "description": "Get live platform analytics — users, stores, offers, claims, parking stats, top stores"
           }
         }
       ]
@@ -611,22 +604,56 @@
       "name": "Offer Management",
       "item": [
         {
-          "name": "Coming Soon",
+          "name": "1. Get All Offers",
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{base_url}}/api/v1/admin/offers",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "admin",
-                "offers"
-              ]
+              "raw": "{{base_url}}/api/v1/admin/offers?page=1&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "offers"],
+              "query": [{"key": "page", "value": "1"}, {"key": "limit", "value": "20"}]
+            }
+          }
+        },
+        {
+          "name": "2. Create Offer",
+          "event": [{"listen": "test", "script": {"exec": ["if (pm.response.code === 201) { const res = pm.response.json(); if (res.data && res.data.id) pm.collectionVariables.set('offer_id', res.data.id); }"]}}],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"50% Off on Fashion\",\n  \"description\": \"Get flat 50% off on all fashion items\",\n  \"discountType\": \"PERCENTAGE\",\n  \"discountValue\": 50,\n  \"startDate\": \"2026-04-01\",\n  \"endDate\": \"2026-04-30\",\n  \"mallId\": \"{{mall_id}}\",\n  \"storeId\": \"{{store_id}}\",\n  \"isActive\": true\n}"
             },
-            "description": "CRUD operations for offers will be added here"
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/offers",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "offers"]
+            }
+          }
+        },
+        {
+          "name": "3. Update Offer",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"title\": \"60% Off on Fashion\",\n  \"discountValue\": 60,\n  \"isActive\": true\n}"},
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/offers/{{offer_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "offers", "{{offer_id}}"]
+            }
+          }
+        },
+        {
+          "name": "4. Delete Offer",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/offers/{{offer_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "offers", "{{offer_id}}"]
+            }
           }
         }
       ]
@@ -635,25 +662,95 @@
       "name": "User Management",
       "item": [
         {
-          "name": "Coming Soon",
+          "name": "1. Get All Users",
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{base_url}}/api/v1/admin/users",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "admin",
-                "users"
-              ]
+              "raw": "{{base_url}}/api/v1/admin/users?page=1&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "users"],
+              "query": [{"key": "page", "value": "1"}, {"key": "limit", "value": "20"}]
+            }
+          }
+        },
+        {
+          "name": "2. Block User",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/users/{{user_id}}/block",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "users", "{{user_id}}", "block"]
+            }
+          }
+        },
+        {
+          "name": "3. Unblock User",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/users/{{user_id}}/unblock",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "users", "{{user_id}}", "unblock"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Banner Management",
+      "item": [
+        {
+          "name": "1. Get All Banners",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/banners",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "banners"]
+            }
+          }
+        },
+        {
+          "name": "2. Create Banner",
+          "event": [{"listen": "test", "script": {"exec": ["if (pm.response.code === 201) { const res = pm.response.json(); if (res.data && res.data.id) pm.collectionVariables.set('banner_id', res.data.id); }"]}}],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Flat 50% Off\",\n  \"subtitle\": \"At Zara, H&M & more today!\",\n  \"imageUrl\": \"https://example.com/banner.jpg\",\n  \"redirectUrl\": \"https://locomate.app/offers\",\n  \"isActive\": true,\n  \"sortOrder\": 0\n}"
             },
-            "description": "User management endpoints will be added here"
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/banners",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "banners"]
+            }
+          }
+        },
+        {
+          "name": "3. Update Banner",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"title\": \"Updated Banner Title\",\n  \"isActive\": true\n}"},
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/banners/{{banner_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "banners", "{{banner_id}}"]
+            }
+          }
+        },
+        {
+          "name": "4. Delete Banner",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/banners/{{banner_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "banners", "{{banner_id}}"]
+            }
           }
         }
       ]
     }
-  ]
-}

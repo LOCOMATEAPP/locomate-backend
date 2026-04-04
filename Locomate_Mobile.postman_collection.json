@@ -895,6 +895,24 @@
       ]
     },
     {
+      "name": "Banners",
+      "item": [
+        {
+          "name": "Get Active Banners",
+          "request": {
+            "auth": {"type": "noauth"},
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/mobile/banners",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "mobile", "banners"]
+            },
+            "description": "Get all active banners for home screen. No auth required. Returns banners sorted by sortOrder."
+          }
+        }
+      ]
+    },
+    {
       "name": "Parking",
       "item": [
         {

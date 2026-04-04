@@ -25,8 +25,6 @@ import { adminUserRoutes } from './modules/admin/users/routes';
 import { adminOfferRoutes } from './modules/admin/offers/routes';
 import { adminAnalyticsRoutes } from './modules/admin/analytics/routes';
 import { adminBannerRoutes } from './modules/admin/banners/routes';
-import { adminBannerRoutes } from './modules/admin/banners/routes';
-import { mobileBannerRoutes } from './modules/mobile/banners/routes';
 
 export const buildApp = async (): Promise<FastifyInstance> => {
   const app = Fastify({
@@ -35,24 +33,18 @@ export const buildApp = async (): Promise<FastifyInstance> => {
     requestIdLogLabel: 'reqId',
   });
 
-  // Register plugins
   await registerCors(app as any);
   await registerHelmet(app as any);
   await registerRateLimit(app as any);
-
-  // Error handler
   app.setErrorHandler(errorHandler as any);
 
-  // Health check
-  app.get('/health', async () => {
-    return {
-      status: 'ok',
-      timestamp: new Date().toISOString(),
-      uptime: process.uptime(),
-    };
-  });
+  app.get('/health', async () => ({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+  }));
 
-  // Mobile API routes - v1
+  // Mobile API routes
   await app.register(authRoutes, { prefix: '/api/v1/mobile/auth' });
   await app.register(userRoutes, { prefix: '/api/v1/mobile/users' });
   await app.register(mallRoutes, { prefix: '/api/v1/mobile/malls' });
@@ -64,7 +56,7 @@ export const buildApp = async (): Promise<FastifyInstance> => {
   await app.register(parkingRoutes, { prefix: '/api/v1/mobile/parking' });
   await app.register(mobileBannerRoutes, { prefix: '/api/v1/mobile' });
 
-  // Admin API routes - v1
+  // Admin API routes
   await app.register(adminAuthRoutes, { prefix: '/api/v1/admin/auth' });
   await app.register(adminMallRoutes, { prefix: '/api/v1/admin' });
   await app.register(adminStoreRoutes, { prefix: '/api/v1/admin' });
@@ -72,8 +64,6 @@ export const buildApp = async (): Promise<FastifyInstance> => {
   await app.register(adminOfferRoutes, { prefix: '/api/v1/admin' });
   await app.register(adminAnalyticsRoutes, { prefix: '/api/v1/admin' });
   await app.register(adminBannerRoutes, { prefix: '/api/v1/admin' });
-  await app.register(adminBannerRoutes, { prefix: '/api/v1/admin' });
-  await app.register(mobileBannerRoutes, { prefix: '/api/v1/mobile/banners' });
 
   return app as unknown as FastifyInstance;
 };

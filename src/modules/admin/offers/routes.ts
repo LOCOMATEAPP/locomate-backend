@@ -4,6 +4,21 @@ import { AdminOfferRepository } from './repository';
 
 const repo = new AdminOfferRepository();
 
+function buildOfferData(body: any) {
+  const { discountType, discountValue, ...rest } = body;
+  const discount = discountType === 'PERCENTAGE' ? `${discountValue}%` :
+                   discountType === 'FLAT' ? `₹${discountValue}` :
+                   discountType || String(discountValue || '');
+  const data: any = { ...rest, discount };
+  if (!data.storeId) delete data.storeId;
+  if (!data.mallId) delete data.mallId;
+  if (!data.description) data.description = '';
+  // Convert date strings to Date objects
+  if (data.startDate) data.startDate = new Date(data.startDate);
+  if (data.endDate) data.endDate = new Date(data.endDate);
+  return data;
+}
+
 export async function adminOfferRoutes(app: FastifyInstance) {
   app.addHook('preHandler', adminAuthMiddleware);
 
@@ -15,31 +30,12 @@ export async function adminOfferRoutes(app: FastifyInstance) {
   });
 
   app.post('/offers', async (req: any, reply) => {
-    const body = { ...req.body };
-    // Map discountType+discountValue to discount string
-    if (body.discountType && body.discountValue !== undefined) {
-      body.discount = body.discountType === 'PERCENTAGE' ? `${body.discountValue}%` :
-                      body.discountType === 'FLAT' ? `₹${body.discountValue}` :
-                      String(body.discountValue);
-    }
-    if (!body.storeId) delete body.storeId;
-    if (!body.mallId) delete body.mallId;
-    delete body.discountType; delete body.discountValue;
-    const offer = await repo.createOffer(body);
+    const offer = await repo.createOffer(buildOfferData(req.body));
     return reply.code(201).send({ success: true, data: offer });
   });
 
   app.put('/offers/:id', async (req: any, reply) => {
-    const body = { ...req.body };
-    if (body.discountType && body.discountValue !== undefined) {
-      body.discount = body.discountType === 'PERCENTAGE' ? `${body.discountValue}%` :
-                      body.discountType === 'FLAT' ? `₹${body.discountValue}` :
-                      String(body.discountValue);
-    }
-    if (!body.storeId) delete body.storeId;
-    if (!body.mallId) delete body.mallId;
-    delete body.discountType; delete body.discountValue;
-    const offer = await repo.updateOffer(req.params.id, body);
+    const offer = await repo.updateOffer(req.params.id, buildOfferData(req.body));
     return reply.send({ success: true, data: offer });
   });
 

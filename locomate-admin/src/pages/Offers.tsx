@@ -236,9 +236,10 @@ export default function Offers() {
             </div>
             {form.mallId && (
               <div className="col-span-2">
-                <label className="block text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wide">Store (optional)</label>
-                <select value={form.storeId} onChange={e => setForm({ ...form, storeId: e.target.value })} className="input-dark w-full px-3.5 py-2.5 rounded-xl text-sm">
-                  <option value="">All stores in mall</option>
+                <label className="block text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wide">Store *</label>
+                <select value={form.storeId} onChange={e => setForm({ ...form, storeId: e.target.value })}
+                  className="input-dark w-full px-3.5 py-2.5 rounded-xl text-sm">
+                  <option value="">Select Store</option>
                   {stores.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                 </select>
               </div>

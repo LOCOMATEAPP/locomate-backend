@@ -15,12 +15,31 @@ export async function adminOfferRoutes(app: FastifyInstance) {
   });
 
   app.post('/offers', async (req: any, reply) => {
-    const offer = await repo.createOffer(req.body);
+    const body = { ...req.body };
+    // Map discountType+discountValue to discount string
+    if (body.discountType && body.discountValue !== undefined) {
+      body.discount = body.discountType === 'PERCENTAGE' ? `${body.discountValue}%` :
+                      body.discountType === 'FLAT' ? `₹${body.discountValue}` :
+                      String(body.discountValue);
+    }
+    if (!body.storeId) delete body.storeId;
+    if (!body.mallId) delete body.mallId;
+    delete body.discountType; delete body.discountValue;
+    const offer = await repo.createOffer(body);
     return reply.code(201).send({ success: true, data: offer });
   });
 
   app.put('/offers/:id', async (req: any, reply) => {
-    const offer = await repo.updateOffer(req.params.id, req.body);
+    const body = { ...req.body };
+    if (body.discountType && body.discountValue !== undefined) {
+      body.discount = body.discountType === 'PERCENTAGE' ? `${body.discountValue}%` :
+                      body.discountType === 'FLAT' ? `₹${body.discountValue}` :
+                      String(body.discountValue);
+    }
+    if (!body.storeId) delete body.storeId;
+    if (!body.mallId) delete body.mallId;
+    delete body.discountType; delete body.discountValue;
+    const offer = await repo.updateOffer(req.params.id, body);
     return reply.send({ success: true, data: offer });
   });
 
